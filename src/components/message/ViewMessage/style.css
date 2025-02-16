@@ -1,0 +1,73 @@
+.message-list {
+  width: 65%;
+  margin: 0 auto;
+
+}
+
+.ms-content {
+  padding: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  background-color: #f8f9fa;
+  overflow-y: auto;
+  height: 80vh;
+  align-content: end;
+
+}
+.message-v {
+  width: fit-content;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 15px;
+  position: relative;
+  max-width: 80%; /* Limit the width of the message */
+  word-wrap: break-word; /* Wrap long words */
+  height: fit-content;
+  border: 1px solid #bcc1ca;
+}
+
+.sent {
+  margin-left: auto;
+  background-color: white;
+}
+
+.received {
+  background-color: #ffffff; /* White background for received messages */
+  color: black;
+}
+
+.timestamp {
+  font-size: 0.8em;
+  color: #888;
+  text-align: right;
+  margin-top: 5px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.message-input{
+    width: 100%;
+    border-radius: 20px;
+    font-size: 1em;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.message-input input{
+    width: 90%;
+    border: none;
+    outline: none;
+    padding: 20px;
+    border-radius: 20px;
+    padding-right: 0;
+}

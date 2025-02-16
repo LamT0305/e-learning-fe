@@ -1,0 +1,35 @@
+.schedule {
+  padding: 15px;
+  border-radius: 20px;
+  margin-top: 20px;
+  background-color: white;
+}
+
+.schedule-details {
+  display: flex;
+  overflow-x: auto;
+  cursor: pointer;
+  scrollbar-width: none; /* Firefox */
+}
+
+.schedule-details::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.details {
+  width: 30%;
+  background-color: #e5eeff;
+  padding: 10px;
+  border-radius: 20px;
+  margin-right: 10px;
+}
+
+.subject,
+.time,
+.date,
+.status {
+  display: flex;
+  width: 100%;
+  padding: 8px 10px;
+  font-weight: bolder;
+}
