@@ -6,6 +6,8 @@ import StudentMessage from "../pages/message/StudentMessage";
 import ViewAllSchedule from "../pages/student/schedule/all-schedule/ViewAllSchedule";
 import BookNewSchedule from "../pages/student/schedule/book-schedule/BookNewSchedule";
 import ScheduleHistory from "../pages/student/schedule/schedule-history/ScheduleHistory";
+import CreateBlog from "../pages/student/create-blog/CreateBlog";
+import BlogManagement from "../pages/student/blog-management/BlogManagement";
 
 const Layout = () => {
   return (
@@ -44,6 +46,18 @@ const router = createBrowserRouter([
       {
         path: "/schedule-history",
         element: <ScheduleHistory />,
+      },
+      {
+        path: "/create-blog",
+        element: <CreateBlog />,
+      },
+      {
+        path: "/update-blog/:id",
+        element: <CreateBlog />,
+      },
+      {
+        path: "/blog-management",
+        element: <BlogManagement />,
       },
     ],
   },

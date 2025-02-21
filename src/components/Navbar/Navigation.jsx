@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useAuth from "../../redux/hooks/useAuth";
 
 function Navigation() {
   const [open, setOpen] = useState(false);
+  const [openBlog, setOpenBlog] = useState(false);
+
+  const { handleLogout } = useAuth();
   return (
     <nav className="navigation">
       <ul>
@@ -20,7 +24,29 @@ function Navigation() {
           </p>
         </li>
         <li>
-          <Link to="/">Blogs</Link>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Link to="/">Blogs</Link>
+            <button style={{ padding: "5px 12px" }}>
+              {openBlog ? (
+                <i
+                  className="fa fa-caret-up"
+                  onClick={() => setOpenBlog(!openBlog)}
+                ></i>
+              ) : (
+                <i
+                  className="fa fa-caret-down"
+                  onClick={() => setOpenBlog(!openBlog)}
+                ></i>
+              )}
+            </button>
+          </div>
+
+          {openBlog ? (
+            <div style={{ backgroundColor: "#ccc" }}>
+              <Link to="/create-blog">Create Blog</Link>
+              <Link to={"/blog-management"}>Blog management</Link>
+            </div>
+          ) : null}
         </li>
         <li>
           <Link to="/student-messages">Messages</Link>
@@ -58,6 +84,11 @@ function Navigation() {
               <Link to="/schedule-history">Schedule History</Link>
             </div>
           ) : null}
+        </li>
+        <li>
+          <Link to={"/"} onClick={() =>handleLogout()}>
+            Log out
+          </Link>
         </li>
       </ul>
     </nav>
