@@ -20,6 +20,7 @@ const useAuth = () => {
         sessionStorage.setItem("isAuthenticated", true);
         dispatch(setUser(response.data.user));
         window.location.reload();
+        
       }
     } catch (error) {
       console.log(error);
@@ -30,6 +31,7 @@ const useAuth = () => {
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("isAuthenticated");
+    sessionStorage.removeItem("userId");
     dispatch(setUser(null));
     navigate("/");
     window.location.reload();

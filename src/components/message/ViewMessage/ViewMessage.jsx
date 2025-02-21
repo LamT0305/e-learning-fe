@@ -1,72 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import avt from "../../../assets/avt.jpg";
+import useMessage from "../../../redux/hooks/useMessage";
+import useAuth from "../../../redux/hooks/useAuth";
+import { io } from "socket.io-client";
 
-const messages = [
-  {
-    _id: "67a38568811f36cfbccd86fb",
-    sender_id: { _id: "679480e8824268d08507a9b3", name: "Joe Lam" },
-    receiver_id: {
-      _id: "6794894097b1b5b9a9dc0c0b",
-      name: "Tyson Tutor Corztera",
-    },
-    content: "This is update message",
-    created_at: "2025-02-05T15:36:08.293Z",
-    __v: 0,
-  },
-  {
-    _id: "67b1dda0ace75f720300b2e0",
-    sender_id: {
-      _id: "6794894097b1b5b9a9dc0c0b",
-      name: "Tyson Tutor Corztera",
-    },
-    receiver_id: { _id: "679480e8824268d08507a9b3", name: "Joe Lam" },
-    content: "Helo 1",
-    created_at: "2025-02-16T12:44:16.775Z",
-    __v: 0,
-  },
-  {
-    _id: "67b1dda6ace75f720300b2e3",
-    sender_id: {
-      _id: "6794894097b1b5b9a9dc0c0b",
-      name: "Tyson Tutor Corztera",
-    },
-    receiver_id: { _id: "679480e8824268d08507a9b3", name: "Joe Lam" },
-    content: "Helo 2",
-    created_at: "2025-02-16T12:44:22.204Z",
-    __v: 0,
-  },
-  {
-    _id: "67b1e375ace75f720300b2e9",
-    sender_id: {
-      _id: "6794894097b1b5b9a9dc0c0b",
-      name: "Tyson Tutor Corztera",
-    },
-    receiver_id: {
-      _id: "679480e8824268d08507a9b3",
-      name: "Joe Lam",
-    },
-    content: "Helo 3",
-    created_at: "2025-02-16T13:09:09.992Z",
-    __v: 0,
-  },
-  {
-    _id: "67b1e37aace75f720300b2ec",
-    sender_id: {
-      _id: "6794894097b1b5b9a9dc0c0b",
-      name: "Tyson Tutor Corztera",
-    },
-    receiver_id: {
-      _id: "679480e8824268d08507a9b3",
-      name: "Joe Lam",
-    },
-    content: "Helo 4",
-    created_at: "2025-02-16T13:09:14.696Z",
-    __v: 0,
-  },
-];
+const socket = io("http://localhost:3000"); // Ensure WebSocket is initialized
 
-function ViewMessage() {
+function ViewMessage({ id, name }) {
+  const {
+    messages,
+    handleGetConversationBetweenUsers,
+    handleSendMessage,
+    handleUpdateMessage,
+    handleDeleteMessage,
+  } = useMessage();
+  const { user, handleGetUser } = useAuth();
+  const [newMessage, setNewMessage] = useState("");
+  const [editingMessageId, setEditingMessageId] = useState(null); // Track editing message
+
+  const generateConversationId = (userId1, userId2) => {
+    return [userId1, userId2].sort().join("_"); // Ensures consistent ordering
+  };
+
+  useEffect(() => {
+    if (id && user?.user_id?._id) {
+      const conversationId = generateConversationId(user.user_id._id, id);
+      socket.emit("joinRoom", conversationId);
+      handleGetConversationBetweenUsers(id);
+    }
+    handleGetUser();
+
+  }, [id, user]); // Ensure it updates when `id` or `user` changes
+
+  // Handle Send or Update Message
+  const _handleSendMessage = (e) => {
+    e.preventDefault();
+    if (newMessage.trim() === "" || !id) return;
+
+    if (editingMessageId) {
+      // If editing, update the message
+      handleUpdateMessage(editingMessageId, newMessage);
+      setEditingMessageId(null);
+    } else {
+      // Otherwise, send a new message
+      handleSendMessage(id, newMessage);
+    }
+    setNewMessage(""); // Clear input
+  };
+
+  // Handle Edit Click
+  const _handleEditMessage = (messageId, content) => {
+    setEditingMessageId(messageId);
+    setNewMessage(content); // Populate input with message content
+  };
+
   return (
     <div className="message-list">
       <div className="user-info">
@@ -78,20 +66,22 @@ function ViewMessage() {
           height={46}
           style={{ borderRadius: "50%" }}
         />
-        <p>Nguyen A</p>
+        <p>{name ? name : "Unknown"}</p>
       </div>
       <div className="ms-content">
-        {messages.map((message) => (
+        {messages.map((message, index) => (
           <div
-            key={message._id}
+            key={message._id || index}
             className={`message-v ${
-              message.sender_id._id === "6794894097b1b5b9a9dc0c0b"
+              String(message.sender_id._id || message.sender_id) ===
+              String(user.user_id?._id)
                 ? "sent"
                 : "received"
-            }`}
+            } ${message.sender_id._id}`}
           >
             <div className="" style={{ display: "flex", alignItems: "center" }}>
-              {message.sender_id._id !== "6794894097b1b5b9a9dc0c0b" ? (
+              {String(message.sender_id._id || message.sender_id) !==
+              String(user.user_id?._id) ? (
                 <img
                   src={avt}
                   alt="avt"
@@ -110,13 +100,45 @@ function ViewMessage() {
                   minute: "2-digit",
                 })}
               </div>
+
+              {String(message.sender_id._id || message.sender_id) ==
+              String(user.user_id?._id) ? (
+                <div
+                  className="message-actions"
+                  style={{
+                    marginLeft: 10,
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  <button
+                    style={{ padding: 5 }}
+                    onClick={() =>
+                      _handleEditMessage(message._id, message.content)
+                    }
+                  >
+                    <i className="fa fa-edit"></i>
+                  </button>
+                  <button
+                    style={{ padding: 5 }}
+                    onClick={() => handleDeleteMessage(message._id, message.sender_id, user.user_id?._id)}
+                  >
+                    <i className="fa fa-trash"></i>
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         ))}
-
-        {/* input */}
+        {/* Input */}
         <div className="message-input">
-          <input type="text" placeholder="Write a message" />
+          <input
+            type="text"
+            placeholder="Write a message"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
           <div
             style={{
               color: "blue",
@@ -125,7 +147,13 @@ function ViewMessage() {
               cursor: "pointer",
             }}
           >
-            <i className="fa fa-paper-plane" aria-hidden="true"></i>
+            <i
+              className={`fa ${
+                editingMessageId ? "fa-check" : "fa-paper-plane"
+              }`}
+              aria-hidden="true"
+              onClick={(e) => _handleSendMessage(e)}
+            ></i>
           </div>
         </div>
       </div>
