@@ -28,7 +28,7 @@ export const POST_API = (id) => {
     createStaff: "/staff/create-staff",
     allocateTutors: "/staff/allocation",
     createSchedule: "/schedule/create-schedule",
-    filterScheduleByStatus: "/schedule/filter-schedule-by-status",
+    filterScheduleByStatus: `/schedule/filter-schedule-by-status`,
     createRole: "/role/",
     sendMessage: "/message/send-message",
     commentBlog: `/comment/comment-on-blog/${id}`, //done

@@ -81,12 +81,11 @@ function Navigation() {
             <div className="dropdown-content">
               <Link to="/view-schedules">View all schedules</Link>
               <Link to="/book-new-schedule">Book new schedule</Link>
-              <Link to="/schedule-history">Schedule History</Link>
             </div>
           ) : null}
         </li>
         <li>
-          <Link to={"/"} onClick={() =>handleLogout()}>
+          <Link to={"/"} onClick={() => handleLogout()}>
             Log out
           </Link>
         </li>

@@ -31,3 +31,9 @@
 .schedule-table tr:hover {
   background-color: #f1f1f1;
 }
+
+.page-btn-active {
+  background-color: blue;
+  color: white;
+  font-weight: 900;
+}
