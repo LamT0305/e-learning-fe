@@ -16,7 +16,7 @@ function Navigation() {
           <p
             style={{
               margin: 0,
-              padding: "14px 35px",
+              padding: "14px",
               color: "white",
             }}
           >

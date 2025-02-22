@@ -1,7 +1,7 @@
 .message-list {
   width: 65%;
+  height: 100%;
   margin: 0 auto;
-
 }
 
 .ms-content {
@@ -9,11 +9,15 @@
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
   background-color: #f8f9fa;
+  align-content: end;
+}
+
+.ms-content-listms {
   overflow-y: auto;
   height: 80vh;
   align-content: end;
-
 }
+
 .message-v {
   width: fit-content;
   margin: 10px 0;
@@ -53,21 +57,22 @@
   border-top-right-radius: 20px;
 }
 
-.message-input{
-    width: 100%;
-    border-radius: 20px;
-    font-size: 1em;
-    background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.message-input {
+  width: 100%;
+  border-radius: 20px;
+  font-size: 1em;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid blue;
 }
 
-.message-input input{
-    width: 90%;
-    border: none;
-    outline: none;
-    padding: 20px;
-    border-radius: 20px;
-    padding-right: 0;
+.message-input input {
+  width: 90%;
+  border: none;
+  outline: none;
+  padding: 20px;
+  border-radius: 20px;
+  padding-right: 0;
 }

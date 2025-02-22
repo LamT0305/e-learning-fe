@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
 import avt from "../../../assets/avt.jpg";
 import useMessage from "../../../redux/hooks/useMessage";
@@ -30,7 +30,6 @@ function ViewMessage({ id, name }) {
       handleGetConversationBetweenUsers(id);
     }
     handleGetUser();
-
   }, [id, user]); // Ensure it updates when `id` or `user` changes
 
   // Handle Send or Update Message
@@ -55,6 +54,26 @@ function ViewMessage({ id, name }) {
     setNewMessage(content); // Populate input with message content
   };
 
+  const bottomRef = useRef(null);
+  const messagesEndRef = useRef(null);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+
+  const checkIfAtBottom = () => {
+    if (messagesEndRef.current) {
+      const { scrollHeight, scrollTop, clientHeight } = messagesEndRef.current;
+      setIsAtBottom(scrollHeight - scrollTop === clientHeight);
+    }
+  };
+
+  useEffect(() => {
+    // Check if user is at the bottom every time the component is mounted or updated
+    checkIfAtBottom();
+
+    // Scroll to the bottom if user is at the bottom
+    if (isAtBottom && bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isAtBottom]);
   return (
     <div className="message-list">
       <div className="user-info">
@@ -69,68 +88,86 @@ function ViewMessage({ id, name }) {
         <p>{name ? name : "Unknown"}</p>
       </div>
       <div className="ms-content">
-        {messages.map((message, index) => (
-          <div
-            key={message._id || index}
-            className={`message-v ${
-              String(message.sender_id._id || message.sender_id) ===
-              String(user.user_id?._id)
-                ? "sent"
-                : "received"
-            } ${message.sender_id._id}`}
-          >
-            <div className="" style={{ display: "flex", alignItems: "center" }}>
-              {String(message.sender_id._id || message.sender_id) !==
-              String(user.user_id?._id) ? (
-                <img
-                  src={avt}
-                  alt="avt"
-                  className="avt"
-                  width={36}
-                  height={36}
-                  style={{ borderRadius: "50%" }}
-                />
-              ) : null}
-              <div className="message-content" style={{ marginRight: 10 }}>
-                {message.content}
-              </div>
-              <div className="timestamp">
-                {new Date(message.created_at).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </div>
-
-              {String(message.sender_id._id || message.sender_id) ==
-              String(user.user_id?._id) ? (
-                <div
-                  className="message-actions"
-                  style={{
-                    marginLeft: 10,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                  }}
-                >
-                  <button
-                    style={{ padding: 5 }}
-                    onClick={() =>
-                      _handleEditMessage(message._id, message.content)
-                    }
-                  >
-                    <i className="fa fa-edit"></i>
-                  </button>
-                  <button
-                    style={{ padding: 5 }}
-                    onClick={() => handleDeleteMessage(message._id, message.sender_id, user.user_id?._id)}
-                  >
-                    <i className="fa fa-trash"></i>
-                  </button>
+        <div
+          className="ms-content-listms"
+          ref={messagesEndRef}
+          onScroll={checkIfAtBottom}
+        >
+          {messages.map((message, index) => (
+            <div
+              key={message._id || index}
+              className={`message-v ${
+                String(message.sender_id._id || message.sender_id) ===
+                String(user.user_id?._id)
+                  ? "sent"
+                  : "received"
+              } ${message.sender_id._id}`}
+            >
+              <div
+                className=""
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                {String(message.sender_id._id || message.sender_id) !==
+                String(user.user_id?._id) ? (
+                  <img
+                    src={avt}
+                    alt="avt"
+                    className="avt"
+                    width={36}
+                    height={36}
+                    style={{ borderRadius: "50%" }}
+                  />
+                ) : null}
+                <div className="message-content" style={{ marginRight: 10 }}>
+                  {message.content}
                 </div>
-              ) : null}
+                <div className="timestamp">
+                  {new Date(message.created_at).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+
+                {String(message.sender_id._id || message.sender_id) ===
+                String(user.user_id?._id) ? (
+                  <div
+                    className="message-actions"
+                    style={{
+                      marginLeft: 10,
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                    }}
+                  >
+                    <button
+                      style={{ padding: 5 }}
+                      onClick={() =>
+                        _handleEditMessage(message._id, message.content)
+                      }
+                    >
+                      <i className="fa fa-edit"></i>
+                    </button>
+                    <button
+                      style={{ padding: 5 }}
+                      onClick={() =>
+                        handleDeleteMessage(
+                          message._id,
+                          message.sender_id,
+                          user.user_id?._id
+                        )
+                      }
+                    >
+                      <i className="fa fa-trash"></i>
+                    </button>
+                  </div>
+                ) : null}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+          {/* Add this div to scroll to */}
+          <div ref={bottomRef} />
+        </div>
+
         {/* Input */}
         <div className="message-input">
           <input
