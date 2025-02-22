@@ -17,6 +17,8 @@ export const GET_API = (id, page, status) => {
     getBlogWaitingApproval: "/blog/get-list-blogs-pending",
     getMyBlogs: `/blog/my-blogs?status=${status}`,
     getUserProfile: "/user/profile",
+    getNotifications: "/notification/get-all-notification",
+
   };
 };
 

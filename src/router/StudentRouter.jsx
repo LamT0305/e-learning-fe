@@ -1,12 +1,12 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Navigation from "../components/Navbar/Navigation";
 import HomePage from "../pages/student/home/HomePage";
-import Notification from "../pages/student/notification/Notification";
 import ViewAllSchedule from "../pages/student/schedule/all-schedule/ViewAllSchedule";
 import BookNewSchedule from "../pages/student/schedule/book-schedule/BookNewSchedule";
 import CreateBlog from "../pages/student/create-blog/CreateBlog";
 import BlogManagement from "../pages/student/blog-management/BlogManagement";
 import Message from "../pages/message/Message";
+import Notification from "../pages/notification/Notification";
 
 const Layout = () => {
   return (
@@ -31,11 +31,11 @@ const router = createBrowserRouter([
         element: <Message />,
       },
       {
-        path: "/notifications",
+        path: "/student-notifications",
         element: <Notification />,
       },
       {
-        path: "/view-schedules",
+        path: "/view-student-schedules",
         element: <ViewAllSchedule />,
       },
       {

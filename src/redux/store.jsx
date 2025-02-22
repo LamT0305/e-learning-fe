@@ -4,7 +4,7 @@ import comment from "./slice/CommentSlice";
 import auth from "./slice/AuthSlice";
 import message from "./slice/MessageSlice";
 import schedule from "./slice/ScheduleSlice";
-
+import notification from "./slice/NotificationSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,7 +12,8 @@ const store = configureStore({
     blog: blog,
     comment: comment,
     message: message,
-    schedule: schedule,  
+    schedule: schedule,
+    notification: notification,
   },
 });
 

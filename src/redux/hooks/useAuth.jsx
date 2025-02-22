@@ -20,7 +20,6 @@ const useAuth = () => {
         sessionStorage.setItem("isAuthenticated", true);
         dispatch(setUser(response.data.user));
         window.location.reload();
-        
       }
     } catch (error) {
       console.log(error);
