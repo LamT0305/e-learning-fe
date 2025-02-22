@@ -1,0 +1,74 @@
+.form-login {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  width: 100%;
+}
+
+.form-login h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.form-login p {
+  margin-bottom: 30px;
+  color: #666;
+}
+
+.form-login .email,
+.form-login .password {
+  margin-bottom: 20px;
+}
+
+.form-login input[type="email"],
+.form-login input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.form-login .checkbox {
+  margin-bottom: 20px;
+}
+
+.form-login .checkbox label {
+  color: #666;
+}
+
+.form-login button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.form-login button:hover {
+  background-color: #0056b3;
+}
+
+.form-login .forgot-pw {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.form-login .forgot-pw a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.form-login .forgot-pw a:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  margin: 0;
+}
