@@ -6,7 +6,7 @@ import useAuth from "../../../redux/hooks/useAuth";
 function FormLogin() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [remember, setRemember] = React.useState(true);
+  const [remember, setRemember] = React.useState(false);
 
   const { isLoading, handleLogin } = useAuth();
 

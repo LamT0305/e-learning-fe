@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./style.css";
-import useSchedule from "../../../../redux/hooks/useSchedule";
+import useSchedule from "../../../redux/hooks/useSchedule";
 
-function ViewAllSchedule() {
+function ViewSchedules() {
   const [filter, setFilter] = useState("All");
-  const { isLoading, schedules, totalPages, handleGetSchedules } =
-    useSchedule();
+  const {
+    isLoading,
+    schedules,
+    totalPages,
+    handleGetSchedules,
+    handleUpdateSchedule,
+  } = useSchedule();
   const [currentPage, setCurrentPage] = useState(1);
   const [startPage, setStartPage] = useState(1);
   const [endPage, setEndPage] = useState(10);
+  const [dropdown, setDropdown] = useState(null);
 
   useEffect(() => {
     handleGetSchedules(filter === "All" ? null : filter, currentPage);
@@ -44,6 +50,9 @@ function ViewAllSchedule() {
     }
   };
 
+  const toggleDropdown = (id) => {
+    setDropdown(dropdown === id ? null : id);
+  };
   const pages =
     totalPages <= 10
       ? Array.from({ length: totalPages }, (_, index) => index + 1)
@@ -52,8 +61,13 @@ function ViewAllSchedule() {
           (_, index) => startPage + index
         );
 
+  const handleClickUpdate = (id, _status) => {
+    handleUpdateSchedule(id, _status);
+    setDropdown(null);
+  };
+
   const handleFilter = (e) => {
-    setCurrentPage(1);
+    setCurrentPage(() => 1);
     setFilter(e.target.value);
   };
   return (
@@ -70,7 +84,10 @@ function ViewAllSchedule() {
       <div className="schedule-container">
         <header>
           <h2 style={{ textDecoration: "underline" }}>View all schedules</h2>
-          <select value={filter} onChange={handleFilter}>
+          <select
+            value={filter}
+            onChange={handleFilter}
+          >
             <option value="All">All</option>
             <option value="0">Waiting</option>
             <option value="1">Scheduled</option>
@@ -98,7 +115,38 @@ function ViewAllSchedule() {
                 <td>{schedule.date}</td>
                 <td>{schedule.duration}</td>
                 <td>{schedule.meetingType}</td>
-                <td>{statusString(schedule.status)}</td>
+                <td>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-evenly",
+                      alignItems: "center",
+                    }}
+                  >
+                    {statusString(schedule.status)}
+                    <button onClick={() => toggleDropdown(schedule._id)}>
+                      <i className="fa fa-edit"></i>
+                    </button>
+                    {dropdown === schedule._id ? (
+                      <div className="stt-selection">
+                        <p
+                          onClick={(e) => handleClickUpdate(schedule._id, "1")}
+                          className="stt-option"
+                          style={{ backgroundColor: "green", color: "white" }}
+                        >
+                          Accept
+                        </p>
+                        <p
+                          onClick={(e) => handleClickUpdate(schedule._id, "-1")}
+                          className="stt-option"
+                          style={{ backgroundColor: "red" }}
+                        >
+                          Reject
+                        </p>
+                      </div>
+                    ) : null}
+                  </div>
+                </td>
                 <td>{schedule.note}</td>
                 <td>{new Date(schedule.createdAt).toLocaleString()}</td>
               </tr>
@@ -134,4 +182,4 @@ function ViewAllSchedule() {
   );
 }
 
-export default ViewAllSchedule;
+export default ViewSchedules;

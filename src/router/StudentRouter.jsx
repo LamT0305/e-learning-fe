@@ -31,7 +31,7 @@ const router = createBrowserRouter([
         element: <Message />,
       },
       {
-        path: "/student-notifications",
+        path: "/notifications",
         element: <Notification />,
       },
       {

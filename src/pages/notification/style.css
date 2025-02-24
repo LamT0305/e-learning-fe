@@ -10,10 +10,6 @@
   position: relative;
 }
 
-.noti-list {
-  overflow-y: scroll;
-}
-
 .noti-content p {
   font-weight: bold;
 }
@@ -21,9 +17,14 @@
 .noti-container {
   background-color: #ccc;
   height: 100%;
-  padding: 20px;
 }
 
+.noti-list {
+  width: 90%;
+  height: 80%;
+  margin: 0 auto;
+  overflow: scroll;
+}
 .delete-noti {
   background-color: #f3f4f6;
   border: none;

@@ -68,15 +68,7 @@ function Navigation() {
           </Link>
         </li>
         <li>
-          <Link
-            to={
-              Role_name === "Student"
-                ? "/student-notifications"
-                : "/tutor-notifications"
-            }
-          >
-            Notifications
-          </Link>
+          <Link to={"/notifications"}>Notifications</Link>
         </li>
         <li>
           <Link to="/contact">Progress and report</Link>

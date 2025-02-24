@@ -16,10 +16,20 @@ const slice = createSlice({
       state.notifications = action.payload;
     },
     addNotification: (state, action) => {
-      state.notifications.push(action.payload);
+      const exists = state.notifications.some(
+        (noti) => noti._id === action.payload._id
+      );
+      if (!exists) {
+        state.notifications.unshift(action.payload);
+      }
+    },
+    setDeleteNoti: (state, action) => {
+      state.notifications = state.notifications.filter(
+        (noti) => noti._id !== action.payload
+      );
     },
   },
 });
 
-export const { setLoading, setNotifications, addNotification } = slice.actions;
+export const { setLoading, setNotifications, addNotification, setDeleteNoti } = slice.actions;
 export default slice.reducer;

@@ -3,10 +3,10 @@ import {
   setLoading,
   setSchedules,
   setTotalPages,
-  setDeleteSchedule,
+  setUpdateSchedule,
 } from "../slice/ScheduleSlice";
 import axiosInstance from "../../utils/Axios";
-import { DELETE_API, GET_API, POST_API } from "../../utils/APIs";
+import { DELETE_API, GET_API, POST_API, PUT_API } from "../../utils/APIs";
 
 const useSchedule = () => {
   const { isLoading, schedules, totalPages } = useSelector(
@@ -76,25 +76,24 @@ const useSchedule = () => {
     dispatch(setLoading(false));
   };
 
-  const handleDeleteSchedule = async (scheduleId) => {
+  const handleUpdateSchedule = async (id, status) => {
     dispatch(setLoading(true));
     try {
-      const cf = window.confirm(
-        "Are you sure you want to delete this schedule?"
-      );
-      if (cf) {
-        const res = await axiosInstance.delete(
-          DELETE_API(scheduleId).deleteSchedule,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (res.status === 200) {
-          dispatch(setDeleteSchedule(scheduleId));
+      const res = await axiosInstance.put(
+        PUT_API(id).updateSchedule,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
+      );
+      if (res.status === 200) {
+        const payload = {
+          id: id,
+          status: status,
+        };
+        dispatch(setUpdateSchedule(payload));
       }
     } catch (error) {
       console.log(error);
@@ -107,7 +106,6 @@ const useSchedule = () => {
         alert("Session expired! Please login again.");
       }
     }
-
     dispatch(setLoading(false));
   };
 
@@ -117,7 +115,7 @@ const useSchedule = () => {
     totalPages,
     handleGetSchedules,
     handleCreateNewSchedule,
-    handleDeleteSchedule,
+    handleUpdateSchedule,
   };
 };
 

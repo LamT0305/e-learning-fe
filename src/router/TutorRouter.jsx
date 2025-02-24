@@ -3,8 +3,8 @@ import Navigation from "../components/Navbar/Navigation";
 import HomePage from "../pages/tutor/home/HomePage";
 import Message from "../pages/message/Message";
 import Notification from "../pages/notification/Notification";
-import ViewAllSchedule from "../pages/student/schedule/all-schedule/ViewAllSchedule";
 import { useLocation } from "react-router-dom";
+import ViewSchedules from "../pages/tutor/schedule/ViewSchedules";
 
 const DebugRoute = () => {
   const location = useLocation();
@@ -27,8 +27,8 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> }, // 👈 Explicitly define root
       { path: "/tutor-messages", element: <Message /> }, // 👈 Add leading `/`
-      { path: "/tutor-notifications", element: <Notification /> },
-      { path: "/view-tutor-schedules", element: <ViewAllSchedule /> },
+      { path: "/notifications", element: <Notification /> },
+      { path: "/view-tutor-schedules", element: <ViewSchedules /> },
       { path: "*", element: <p>Page Not Found</p> },
     ],
   },

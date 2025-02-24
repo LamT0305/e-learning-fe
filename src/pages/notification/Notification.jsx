@@ -4,7 +4,7 @@ import "./style.css";
 import useNotification from "../../redux/hooks/useNotification";
 
 function Notification() {
-  const { isLoading, notifications, handleGetNotifications } =
+  const { isLoading, notifications, handleGetNotifications, handleDeleteNoti } =
     useNotification();
 
   useEffect(() => {
@@ -14,7 +14,9 @@ function Notification() {
   return (
     <div className="inner-page">
       <div className="noti-container">
-        <h1 style={{ textDecoration: "underline", marginBottom: 20 }}>
+        <h1
+          style={{ textDecoration: "underline", marginBottom: 20, padding: 20 }}
+        >
           Notifications
         </h1>
         <ul className="noti-list">
@@ -28,12 +30,12 @@ function Notification() {
                 style={{ borderRadius: 10, marginRight: 10 }}
               />
               <div className="noti-content">
-
-                <p>
-                  {noti.content}
-                </p>
+                <p>{noti.content}</p>
               </div>
-              <div className="delete-noti">
+              <div
+                className="delete-noti"
+                onClick={() => handleDeleteNoti(noti._id)}
+              >
                 <i className="fa fa-trash" aria-hidden="true"></i>
               </div>
             </li>

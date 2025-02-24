@@ -18,7 +18,6 @@ export const GET_API = (id, page, status) => {
     getMyBlogs: `/blog/my-blogs?status=${status}`,
     getUserProfile: "/user/profile",
     getNotifications: "/notification/get-all-notification",
-
   };
 };
 
@@ -46,6 +45,7 @@ export const PUT_API = (id) => {
     updateComment: `/comment/update-comment/${id}`,
     updateBlog: `/blog/update-blog/${id}`,
     blogApproval: `/blog/approval/${id}`,
+    updateSchedule: `/schedule/update-schedule-request/${id}`,
   };
 };
 
@@ -54,9 +54,9 @@ export const DELETE_API = (id) => {
     deleteStudent: `/student/delete-student/${id}`,
     deleteTutor: `/tutor/delete-tutor/${id}`,
     deleteAllocation: `/staff/delete-allocation/${id}`,
-    deleteSchedule: `/schedule/delete-schedule/${id}`,
     deleteMessage: `/message/delete-message/${id}`,
     deleteComment: `/comment/delete-comment/${id}`,
     deleteBlog: `/blog/delete-blog/${id}`,
+    deleteNotifications: `/notification/delete-notification/${id}`,
   };
 };
