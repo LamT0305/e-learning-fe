@@ -5,6 +5,7 @@ import Message from "../pages/message/Message";
 import Notification from "../pages/notification/Notification";
 import { useLocation } from "react-router-dom";
 import ViewSchedules from "../pages/tutor/schedule/ViewSchedules";
+import BlogRequest from "../pages/tutor/Blog/BlogRequest";
 
 const DebugRoute = () => {
   const location = useLocation();
@@ -25,10 +26,11 @@ const router = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
-      { path: "/", element: <HomePage /> }, // 👈 Explicitly define root
-      { path: "/tutor-messages", element: <Message /> }, // 👈 Add leading `/`
+      { path: "/", element: <HomePage /> },
+      { path: "/tutor-messages", element: <Message /> },
       { path: "/notifications", element: <Notification /> },
       { path: "/view-tutor-schedules", element: <ViewSchedules /> },
+      { path: "/view-blog-request", element: <BlogRequest /> },
       { path: "*", element: <p>Page Not Found</p> },
     ],
   },

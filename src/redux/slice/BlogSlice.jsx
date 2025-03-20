@@ -4,6 +4,7 @@ const initState = {
   isLoading: false,
   blogs: [],
   blog: {},
+  totalPages: 0,
 };
 
 const slice = createSlice({
@@ -22,9 +23,22 @@ const slice = createSlice({
     setBlogById: (state, action) => {
       state.blog = action.payload;
     },
+    setTotalPages: (state, action) => {
+      state.totalPages = action.payload;
+    },
+    setApproval: (state, action) => {
+      state.blogs = state.blogs.filter((blog) => blog._id !== action.payload);
+    },
   },
 });
 
-export const { setLoading, setBlogs, deleteBlog, setBlogById } = slice.actions;
+export const {
+  setLoading,
+  setBlogs,
+  deleteBlog,
+  setBlogById,
+  setTotalPages,
+  setApproval,
+} = slice.actions;
 
 export default slice.reducer;

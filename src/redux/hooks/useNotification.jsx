@@ -79,10 +79,92 @@ const useNotification = () => {
       }
     };
 
+    const handleNotificationBlog = (notification) => {
+      if (socketReceivedNotifications.current.has(notification.noti._id))
+        return;
+
+      socketReceivedNotifications.current.add(notification.noti._id);
+
+      const exists = notifications.some(
+        (noti) => noti._id === notification.noti._id
+      );
+
+      if (!exists) {
+        dispatch(addNotification(notification.noti));
+
+        // Show toast only if the user is NOT on the notifications page
+        if (window.location.pathname !== "/notifications") {
+          toast.info(
+            <div
+              onClick={() => (window.location.href = "/view-blog-request")}
+              style={{
+                cursor: "pointer",
+                color: "blue",
+                textDecoration: "underline",
+              }}
+            >
+              {notification.noti.title} - Click to view
+            </div>,
+            {
+              position: "top-right",
+              autoClose: 6000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+        }
+      }
+    };
     socket.on("receiveNotification", handleNotification);
 
+    socket.on("receiveNotiUploadBlog", handleNotificationBlog);
+
+    const handleNotiBlog = (notification) => {
+      if (socketReceivedNotifications.current.has(notification.noti._id))
+        return;
+
+      socketReceivedNotifications.current.add(notification.noti._id);
+
+      const exists = notifications.some(
+        (noti) => noti._id === notification.noti._id
+      );
+
+      console.log(notification);
+      // if (!exists) {
+      //   dispatch(addNotification(notification.noti));
+
+      //   if (window.location.pathname !== "/notifications") {
+      //     toast.info(
+      //       <div
+      //         onClick={() => (window.location.href = "/view-blog-request")}
+      //         style={{
+      //           cursor: "pointer",
+      //           color: "blue",
+      //           textDecoration: "underline",
+      //         }}
+      //       >
+      //         {notification.noti.title} - Click to view
+      //       </div>,
+      //       {
+      //         position: "top-right",
+      //         autoClose: 6000,
+      //         hideProgressBar: false,
+      //         closeOnClick: true,
+      //         pauseOnHover: true,
+      //         draggable: true,
+      //       }
+      //     );
+      //   }
+      // }
+    };
+
+    socket.on("receiveNotiBlogApproval", handleNotiBlog);
     return () => {
       socket.off("receiveNotification", handleNotification);
+      socket.off("receiveNotiUploadBlog", handleNotificationBlog);
+      socket.off("receiveNotiBlogApproval", handleNotiBlog);
       listenerAdded.current = false;
     };
   }, [dispatch, token, notifications]);

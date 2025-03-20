@@ -5,15 +5,20 @@ import {
   setLoading,
   deleteBlog,
   setBlogById,
+  setTotalPages,
+  setApproval,
 } from "../slice/BlogSlice";
 import axiosInstance from "../../utils/Axios";
 import { DELETE_API, GET_API, POST_API, PUT_API } from "../../utils/APIs";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const useBlog = () => {
   const token = sessionStorage.getItem("token");
   const { blogs, isLoading, blog } = useSelector((state) => state.blog);
   const dispatch = useDispatch();
   let alertShown = false;
+  const navigate = useNavigate();
 
   const handleGetBlogs = async () => {
     dispatch(setLoading(true));
@@ -33,6 +38,7 @@ const useBlog = () => {
         sessionStorage.removeItem("isAuthenticated");
         window.location.reload();
         alert("Session expired! Please login again.");
+        navigate("/");
       }
     }
     dispatch(setLoading(false));
@@ -48,7 +54,25 @@ const useBlog = () => {
         },
       });
       if (res.status === 200) {
-        alert("Uploaded blog successfully!");
+        toast.info(
+          <div
+            style={{
+              cursor: "pointer",
+              color: "blue",
+              textDecoration: "underline",
+            }}
+          >
+            <p>Your blog is waitting for approval</p>
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 6000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
       }
     } catch (error) {
       console.log(error);
@@ -58,6 +82,7 @@ const useBlog = () => {
         sessionStorage.removeItem("isAuthenticated");
         window.location.reload();
         alert("Session expired! Please login again.");
+        navigate("/");
       }
     }
     dispatch(setLoading(false));
@@ -129,7 +154,25 @@ const useBlog = () => {
       );
 
       if (res.status === 200) {
-        alert("Blog updated successfully!");
+        toast.info(
+          <div
+            style={{
+              cursor: "pointer",
+              color: "blue",
+              textDecoration: "underline",
+            }}
+          >
+            <p>Updated blog successfully!</p>
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 6000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
       }
     } catch (error) {
       console.log(error);
@@ -168,6 +211,87 @@ const useBlog = () => {
     }
     dispatch(setLoading(false));
   };
+
+  const handleGetBlogRequest = async () => {
+    dispatch(setLoading(true));
+    try {
+      const res = await axiosInstance.get(GET_API().getBlogWaitingApproval, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 200) {
+        dispatch(setBlogs(res.data.blogs));
+        dispatch(setTotalPages(res.data.totalPages));
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response.data.message === "Invalid token!" && !alertShown) {
+        alertShown = true;
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("isAuthenticated");
+        window.location.reload();
+        alert("Session expired! Please login again.");
+        navigate("/");
+      }
+    }
+    dispatch(setLoading(false));
+  };
+
+  const handleApproveBlog = async (id, status) => {
+    dispatch(setLoading(true));
+    try {
+      const res = await axiosInstance.put(
+        PUT_API(id).blogApproval,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        dispatch(setApproval(id));
+
+        toast.info(
+          <div
+            style={{
+              cursor: "pointer",
+              color: "blue",
+              textDecoration: "underline",
+            }}
+          >
+            {status === "0" ? (
+              <p>Blog approved successfully!</p>
+            ) : (
+              <p>Blog Rejected!</p>
+            )}
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 6000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response.data.message === "Invalid token!" && !alertShown) {
+        alertShown = true;
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("isAuthenticated");
+        window.location.reload();
+        alert("Session expired! Please login again.");
+        navigate("/");
+      }
+    }
+    dispatch(setLoading(false));
+  };
   return {
     blog,
     isLoading,
@@ -178,6 +302,8 @@ const useBlog = () => {
     handleGetBlogById,
     handleUpdateBlog,
     handleMyBlogs,
+    handleGetBlogRequest,
+    handleApproveBlog,
   };
 };
 

@@ -66,26 +66,33 @@ function ViewMessage({ id, name }) {
   };
 
   useEffect(() => {
-    // Check if user is at the bottom every time the component is mounted or updated
     checkIfAtBottom();
-
-    // Scroll to the bottom if user is at the bottom
     if (isAtBottom && bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, isAtBottom]);
   return (
     <div className="message-list">
-      <div className="user-info">
-        <img
-          src={avt}
-          alt="avt"
-          className="avt"
-          width={46}
-          height={46}
-          style={{ borderRadius: "50%" }}
-        />
-        <p>{name ? name : "Unknown"}</p>
+      <div style={{ display: "flex", height: "10%" }}>
+        <div
+          style={{
+            padding: 20,
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: "cornsilk",
+            width: "100%",
+          }}
+        >
+          <img
+            src={avt}
+            alt="avt"
+            className="avt"
+            width={46}
+            height={46}
+            style={{ borderRadius: "50%" }}
+          />
+          <p>{name ? name : "Unknown"}</p>
+        </div>
       </div>
       <div className="ms-content">
         <div
