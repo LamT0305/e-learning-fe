@@ -31,7 +31,7 @@ const useAuth = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("isAuthenticated");
     sessionStorage.removeItem("userId");
-    sessionStorage.removeItem("role_name");
+    sessionStorage.removeItem("role");
     dispatch(setUser(null));
     navigate("/");
     window.location.reload();

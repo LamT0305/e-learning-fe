@@ -6,6 +6,7 @@ import TutorRouter from "./router/TutorRouter";
 import { jwtDecode } from "jwt-decode";
 import { ToastContainer } from "react-toastify";
 import useNotification from "./redux/hooks/useNotification";
+import StaffRouter from "./router/StaffRouter";
 
 function App() {
   const token = sessionStorage.getItem("token");
@@ -17,8 +18,8 @@ function App() {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        setRole(decoded.role_name);
-        sessionStorage.setItem("role_name", decoded.role_name);
+        setRole(decoded.role);
+        sessionStorage.setItem("role", decoded.role);
       } catch (error) {
         console.error("Invalid token:", error);
         sessionStorage.removeItem("token");
@@ -36,6 +37,7 @@ function App() {
       <ToastContainer />
       {role === "Student" && <StudentRouter />}
       {role === "Tutor" && <TutorRouter />}
+      {role === "staff" && <StaffRouter />}
     </>
   );
 }

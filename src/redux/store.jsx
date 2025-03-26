@@ -5,6 +5,7 @@ import auth from "./slice/AuthSlice";
 import message from "./slice/MessageSlice";
 import schedule from "./slice/ScheduleSlice";
 import notification from "./slice/NotificationSlice";
+import staff from "./slice/StaffSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     message: message,
     schedule: schedule,
     notification: notification,
+    staff: staff,
   },
 });
 
