@@ -3,18 +3,20 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UserOutlined,
-  TeamOutlined,
+  HomeOutlined,
+  MessageOutlined,
+  BellOutlined,
   ScheduleOutlined,
+  FileTextOutlined,
   LogoutOutlined,
-  BarChartOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme, Avatar, Dropdown } from "antd";
 import useAuth from "../redux/hooks/useAuth";
 
 const { Header, Sider, Content } = Layout;
 
-const StaffLayout = () => {
+const StudentLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const { user, handleLogout } = useAuth();
@@ -25,36 +27,57 @@ const StaffLayout = () => {
 
   const menuItems = [
     {
-      key: "/staff/dashboard",
+      key: "/",
+      icon: <HomeOutlined />,
+      label: <Link to="/">Home</Link>,
+    },
+    {
+      key: "/student-messages",
+      icon: <MessageOutlined />,
+      label: <Link to="/student-messages">Messages</Link>,
+    },
+    {
+      key: "/view-tutor",
       icon: <UserOutlined />,
-      label: <Link to="/staff/dashboard">Dashboard</Link>,
+      label: <Link to="/view-tutor">View Tutor</Link>,
     },
     {
-      key: "/staff/tutors",
-      icon: <TeamOutlined />,
-      label: <Link to="/staff/tutors">Manage Tutors</Link>,
+      key: "/notifications",
+      icon: <BellOutlined />,
+      label: <Link to="/notifications">Notifications</Link>,
     },
     {
-      key: "/staff/students",
-      icon: <TeamOutlined />,
-      label: <Link to="/staff/students">Manage Students</Link>,
-    },
-    {
-      key: "/staff/allocations",
+      key: "schedule",
       icon: <ScheduleOutlined />,
-      label: <Link to="/staff/allocations">Allocations</Link>,
+      label: "Schedule",
+      children: [
+        {
+          key: "/view-student-schedules",
+          label: <Link to="/view-student-schedules">View Schedules</Link>,
+        },
+      ],
     },
     {
-      key: "/staff/analytics",
-      icon: <BarChartOutlined />,
-      label: <Link to="/staff/analytics">Analytics</Link>,
+      key: "blog",
+      icon: <FileTextOutlined />,
+      label: "Blog",
+      children: [
+        {
+          key: "/create-blog",
+          label: <Link to="/create-blog">Create Blog</Link>,
+        },
+        {
+          key: "/blog-management",
+          label: <Link to="/blog-management">Blog Management</Link>,
+        },
+      ],
     },
   ];
 
   const userMenuItems = [
     {
       key: "profile",
-      label: <Link to="/staff/profile">Profile</Link>,
+      label: <Link to="/student/profile">Profile</Link>,
       icon: <UserOutlined />,
     },
     {
@@ -74,6 +97,7 @@ const StaffLayout = () => {
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
+          className="w-full"
         />
       </Sider>
       <Layout>
@@ -127,4 +151,4 @@ const StaffLayout = () => {
   );
 };
 
-export default StaffLayout;
+export default StudentLayout;

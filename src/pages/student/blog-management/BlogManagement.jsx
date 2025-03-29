@@ -2,126 +2,132 @@ import React, { useEffect } from "react";
 import useBlog from "../../../redux/hooks/useBlog";
 import "./style.css";
 import { Link } from "react-router-dom";
+import { Table, Space, Popconfirm, Tag, Avatar } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 function BlogManagement() {
   const [filter, setFilter] = React.useState("");
-  const { isLoading, blogs, handleMyBlogs, handleDeleteBlog } = useBlog();
+  const { isLoading, blogs, setMyBlogs, handleDeleteBlog } = useBlog();
 
   useEffect(() => {
-    handleMyBlogs(filter);
+    setMyBlogs(filter);
   }, [filter]);
 
-  console.log(blogs);
-
-  // Function to format the date
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    return date.toLocaleString("en-US", options);
-  };
-
-  const isHTML = (str) => /<\/?[a-z][\s\S]*>/i.test(str);
-
-  const formatStatus = (status) => {
-    const statusNumber = parseInt(status);
-    switch (statusNumber) {
-      case -1:
-        return "Waiting for approval";
-      case 0:
-        return "Uploaded";
-      default:
-        return "Rejected";
-    }
-  };
-
-  const handleDelete = (id) => {
-    const isConfirmed = window.confirm("Are you sure?");
-    if (isConfirmed) {
-      handleDeleteBlog(id);
-    }
-  };
+  const columns = [
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      width: "15%",
+      render: (text, record) => (
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <span>{text}</span>
+        </div>
+      ),
+    },
+    {
+      title: "Content",
+      dataIndex: "content",
+      key: "content",
+      width: "30%",
+      render: (text) => (
+        <div
+          className=""
+          dangerouslySetInnerHTML={{
+            __html: text.length > 100 ? text.substring(0, 100) + "..." : text,
+          }}
+        />
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status_upload",
+      key: "status",
+      width: "15%",
+      render: (status) => {
+        const statusMap = {
+          "-1": { color: "gold", text: "Pending Approval" },
+          0: { color: "green", text: "Approved" },
+          1: { color: "red", text: "Rejected" },
+        };
+        const { color, text } = statusMap[status] || {
+          color: "default",
+          text: "Unknown",
+        };
+        return <Tag color={color}>{text}</Tag>;
+      },
+    },
+    {
+      title: "Views",
+      dataIndex: "views",
+      key: "views",
+      width: "10%",
+      sorter: (a, b) => a.views - b.views,
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      width: "15%",
+      render: (date) =>
+        new Date(date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }),
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      width: "15%",
+      render: (_, record) => (
+        <Space size="middle">
+          <Link to={`/update-blog/${record._id}`}>
+            <EditOutlined style={{ color: "#1890ff" }} />
+          </Link>
+          <Popconfirm
+            title="Delete blog"
+            description="Are you sure you want to delete this blog?"
+            onConfirm={() => handleDeleteBlog(record._id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <DeleteOutlined style={{ color: "#ff4d4f", cursor: "pointer" }} />
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
 
   return (
-    <div className="inner-page">
-      <div className="blog-container">
-        <header>
-          <h2 style={{ textDecoration: "underline" }}>View all blogs</h2>
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-            <option value="All">All</option>
-            <option value="-1">Waiting for approval</option>
-            <option value="0">Approved</option>
-            <option value="1">Rejected</option>
-          </select>
-        </header>
-        <table
-          className="blog-table"
-          style={{ width: "100%", tableLayout: "auto" }}
+    <div className="w-full">
+      <div className="header-section" style={{ marginBottom: 20 }}>
+        <h2 className="text-lg font-semibold">Blog Management</h2>
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="border border-gray-200 rounded-lg px-2 py-1"
         >
-          <thead>
-            <tr>
-              <th>Author</th>
-              <th>Title</th>
-              <th>Content</th>
-              <th>Status</th>
-              <th>Created at</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {blogs.map((blog) => (
-              <tr key={blog._id}>
-                <td>{blog.author_id.name}</td>
-                <td>{blog.title}</td>
-                <td className="content-cell">
-                  {isHTML(blog.content) ? (
-                    <div
-                      style={{ wordBreak: "break-word" }}
-                      dangerouslySetInnerHTML={{ __html: blog.content }}
-                    />
-                  ) : (
-                    blog.content
-                  )}
-                </td>
-                <td>{formatStatus(blog.status_upload)}</td>
-                <td style={{ width: "150px" }}>
-                  {formatDate(blog.created_at)}
-                </td>
-                <td>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-evenly",
-                      alignItems: "center",
-                      verticalAlign: "middle",
-                    }}
-                  >
-                    {/* update btn */}
-                    <Link to={`/update-blog/${blog._id}`}>
-                      <i
-                        style={{ cursor: "pointer" }}
-                        className="fa fa-edit"
-                      ></i>
-                    </Link>
-
-                    {/* delete btn */}
-                    <i
-                      onClick={() => handleDelete(blog._id)}
-                      style={{ cursor: "pointer" }}
-                      className="fa fa-trash"
-                    ></i>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          <option value="">All Blogs</option>
+          <option value="-1">Pending Approval</option>
+          <option value="0">Approved</option>
+          <option value="1">Rejected</option>
+        </select>
       </div>
+
+      <Table
+        columns={columns}
+        dataSource={blogs}
+        rowKey="_id"
+        loading={isLoading}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: true,
+          showTotal: (total) => `Total ${total} blogs`,
+        }}
+        className="w-full"
+      />
     </div>
   );
 }

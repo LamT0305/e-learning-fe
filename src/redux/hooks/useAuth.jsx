@@ -46,7 +46,7 @@ const useAuth = () => {
         },
       });
       if (response.status === 200) {
-        dispatch(setUser(response.data));
+        dispatch(setUser(response.data.user));
       }
     } catch (error) {
       console.log(error);

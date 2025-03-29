@@ -3,18 +3,20 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UserOutlined,
-  TeamOutlined,
-  ScheduleOutlined,
+  HomeOutlined,
+  MessageOutlined,
+  CalendarOutlined,
+  BookOutlined,
   LogoutOutlined,
-  BarChartOutlined,
+  UserOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme, Avatar, Dropdown } from "antd";
 import useAuth from "../redux/hooks/useAuth";
 
 const { Header, Sider, Content } = Layout;
 
-const StaffLayout = () => {
+function TutorLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const { user, handleLogout } = useAuth();
@@ -25,36 +27,41 @@ const StaffLayout = () => {
 
   const menuItems = [
     {
-      key: "/staff/dashboard",
+      key: "/tutor",
+      icon: <HomeOutlined />,
+      label: <Link to="/tutor">Home</Link>,
+    },
+    {
+      key: "/tutor/schedule",
+      icon: <CalendarOutlined />,
+      label: <Link to="/tutor/schedule">Schedule</Link>,
+    },
+    {
+      key: "/tutor/blogs",
+      icon: <BookOutlined />,
+      label: <Link to="/tutor/blogs">Blogs</Link>,
+    },
+    {
+      key: "/tutor/messages",
+      icon: <MessageOutlined />,
+      label: <Link to="/tutor/messages">Messages</Link>,
+    },
+    {
+      key: "/tutor/notifications",
+      icon: <BellOutlined />,
+      label: <Link to="/tutor/notifications">Notifications</Link>,
+    },
+    {
+      key: "/tutor/analytics",
       icon: <UserOutlined />,
-      label: <Link to="/staff/dashboard">Dashboard</Link>,
-    },
-    {
-      key: "/staff/tutors",
-      icon: <TeamOutlined />,
-      label: <Link to="/staff/tutors">Manage Tutors</Link>,
-    },
-    {
-      key: "/staff/students",
-      icon: <TeamOutlined />,
-      label: <Link to="/staff/students">Manage Students</Link>,
-    },
-    {
-      key: "/staff/allocations",
-      icon: <ScheduleOutlined />,
-      label: <Link to="/staff/allocations">Allocations</Link>,
-    },
-    {
-      key: "/staff/analytics",
-      icon: <BarChartOutlined />,
-      label: <Link to="/staff/analytics">Analytics</Link>,
+      label: <Link to="/tutor/analytic-dashboard">Analytics</Link>,
     },
   ];
 
   const userMenuItems = [
     {
       key: "profile",
-      label: <Link to="/staff/profile">Profile</Link>,
+      label: <Link to="/tutor/profile">Profile</Link>,
       icon: <UserOutlined />,
     },
     {
@@ -68,11 +75,11 @@ const StaffLayout = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
+          defaultSelectedKeys={["/tutor"]}
           items={menuItems}
         />
       </Sider>
@@ -103,9 +110,10 @@ const StaffLayout = () => {
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
+                  gap: "8px",
                 }}
               >
-                <Avatar src={user?.avatar} style={{ marginRight: "8px" }} />
+                <Avatar icon={<UserOutlined />} src={user?.avatar} />
                 <span>{user?.name}</span>
               </div>
             </Dropdown>
@@ -125,6 +133,6 @@ const StaffLayout = () => {
       </Layout>
     </Layout>
   );
-};
+}
 
-export default StaffLayout;
+export default TutorLayout;

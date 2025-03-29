@@ -53,30 +53,14 @@ const useBlog = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (res.status === 200) {
-        toast.info(
-          <div
-            style={{
-              cursor: "pointer",
-              color: "blue",
-              textDecoration: "underline",
-            }}
-          >
-            <p>Your blog is waitting for approval</p>
-          </div>,
-          {
-            position: "top-right",
-            autoClose: 6000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          }
-        );
+      console.log(res);
+      if (res.status === 201) {
+        toast.success("Blog submitted successfully"); // Changed to success toast
+        // navigate("/blog-management"); // Add navigation after success
       }
     } catch (error) {
-      console.log(error);
-      if (error.response.data.message === "Invalid token!" && !alertShown) {
+      toast.error(error.response?.data?.message || "Failed to upload blog"); // Better error message
+      if (error.response?.data?.message === "Invalid token!" && !alertShown) {
         alertShown = true;
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("isAuthenticated");
@@ -84,8 +68,10 @@ const useBlog = () => {
         alert("Session expired! Please login again.");
         navigate("/");
       }
+      console.log(error)
+    } finally {
+      dispatch(setLoading(false));
     }
-    dispatch(setLoading(false));
   };
 
   const handleDeleteBlog = async (blogId) => {
@@ -187,7 +173,7 @@ const useBlog = () => {
     dispatch(setLoading(false));
   };
 
-  const handleMyBlogs = async (status) => {
+  const setMyBlogs = async (status) => {
     dispatch(setLoading(true));
     try {
       console.log(status);
@@ -301,7 +287,7 @@ const useBlog = () => {
     handleDeleteBlog,
     handleGetBlogById,
     handleUpdateBlog,
-    handleMyBlogs,
+    setMyBlogs,
     handleGetBlogRequest,
     handleApproveBlog,
   };

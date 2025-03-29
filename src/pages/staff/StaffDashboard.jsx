@@ -1,15 +1,22 @@
 import { useEffect } from "react";
-import { Card, Row, Col, Statistic, Table, Tag } from "antd";
+import { Card, Row, Col, Statistic, Table, Tag, Space, Button } from "antd";
 import {
   UserOutlined,
   TeamOutlined,
   CheckCircleOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
+import dayjs from "dayjs";
 import useStaff from "../../redux/hooks/useStaff";
 
 function StaffDashboard() {
-  const { allocations, dashboardStats, getDashboardStats, fetchAllocations } =
-    useStaff();
+  const {
+    allocations,
+    dashboardStats,
+    getDashboardStats,
+    fetchAllocations,
+    isLoading,
+  } = useStaff();
 
   useEffect(() => {
     getDashboardStats();
@@ -19,26 +26,38 @@ function StaffDashboard() {
   const columns = [
     {
       title: "Tutor",
-      dataIndex: ["tutor", "name"],
+      dataIndex: "tutor_id",
       key: "tutor",
+      render: (tutor) => tutor.name,
     },
     {
       title: "Student",
-      dataIndex: ["student", "name"],
+      dataIndex: "student_id",
       key: "student",
+      render: (student) => student.name,
     },
     {
-      title: "Date Allocated",
-      dataIndex: "created_at",
-      key: "date",
-      render: (date) => new Date(date).toLocaleDateString(),
+      title: "Created At",
+      dataIndex: "allocated_at",
+      key: "allocated_at",
+      render: (date) => dayjs(date).format("DD/MM/YYYY"),
     },
     {
-      title: "Status",
-      key: "status",
-      render: () => <Tag color="green">Active</Tag>,
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <Space>
+          <Button
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record._id)}
+            danger
+          />
+        </Space>
+      ),
     },
   ];
+
+  console.log(allocations);
 
   return (
     <div className="dashboard-container">
@@ -78,9 +97,13 @@ function StaffDashboard() {
       <Card title="Recent Allocations" style={{ marginBottom: 24 }}>
         <Table
           columns={columns}
-          dataSource={allocations.slice(0, 5)}
+          dataSource={allocations?.map((allocation) => ({
+            ...allocation,
+            key: allocation._id,
+          }))}
           rowKey="_id"
-          pagination={false}
+          loading={isLoading}
+          className="h-[45vh] overflow-y-scroll"
         />
       </Card>
     </div>

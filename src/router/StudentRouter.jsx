@@ -1,5 +1,5 @@
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import Navigation from "../components/Navbar/Navigation";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import StudentLayout from "../layout/StudentLayout";
 import HomePage from "../pages/student/home/HomePage";
 import ViewAllSchedule from "../pages/student/schedule/all-schedule/ViewAllSchedule";
 import BookNewSchedule from "../pages/student/schedule/book-schedule/BookNewSchedule";
@@ -7,24 +7,21 @@ import CreateBlog from "../pages/student/create-blog/CreateBlog";
 import BlogManagement from "../pages/student/blog-management/BlogManagement";
 import Message from "../pages/message/Message";
 import Notification from "../pages/notification/Notification";
-
-const Layout = () => {
-  return (
-    <>
-      <Navigation />
-      <Outlet />
-    </>
-  );
-};
+import ReadBlog from "../pages/ReadBlog";
+import Tutor from "../pages/student/Tutor";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <StudentLayout />,
     children: [
       {
         path: "/",
         element: <HomePage />,
+      },
+      {
+        path: "/view-tutor",
+        element: <Tutor />,
       },
       {
         path: "/student-messages",
@@ -54,12 +51,16 @@ const router = createBrowserRouter([
         path: "/blog-management",
         element: <BlogManagement />,
       },
+      {
+        path: "/blog/:id",
+        element: <ReadBlog />,
+      },
     ],
   },
 ]);
 
 function StudentRouter() {
-  return <RouterProvider router={router}></RouterProvider>;
+  return <RouterProvider router={router} />;
 }
 
 export default StudentRouter;

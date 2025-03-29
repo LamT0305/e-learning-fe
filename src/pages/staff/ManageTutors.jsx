@@ -158,6 +158,7 @@ function ManageTutors() {
         dataSource={tutors}
         rowKey="_id"
         loading={isLoading}
+        className="h-[70vh] overflow-y-scroll"
       />
 
       <Modal

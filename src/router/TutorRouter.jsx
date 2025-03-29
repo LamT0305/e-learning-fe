@@ -1,37 +1,36 @@
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import Navigation from "../components/Navbar/Navigation";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
+import TutorLayout from "../layout/TutorLayout";
 import HomePage from "../pages/tutor/home/HomePage";
 import Message from "../pages/message/Message";
 import Notification from "../pages/notification/Notification";
-import { useLocation } from "react-router-dom";
 import ViewSchedules from "../pages/tutor/schedule/ViewSchedules";
 import BlogRequest from "../pages/tutor/Blog/BlogRequest";
-
-const DebugRoute = () => {
-  const location = useLocation();
-  return <p>Current Route: {location.pathname}</p>;
-};
-
-const Layout = () => {
-  return (
-    <>
-      <Navigation />
-      <Outlet />
-    </>
-  );
-};
+import Profile from "../pages/tutor/profile/Profile";
+import ReadBlog from "../pages/ReadBlog";
+import AnalyticDashBoard from "../pages/tutor/AnalyticDashBoard";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <Navigate to="/tutor" replace />,
+  },
+  {
+    path: "/tutor",
+    element: <TutorLayout />,
     children: [
-      { path: "/", element: <HomePage /> },
-      { path: "/tutor-messages", element: <Message /> },
-      { path: "/notifications", element: <Notification /> },
-      { path: "/view-tutor-schedules", element: <ViewSchedules /> },
-      { path: "/view-blog-request", element: <BlogRequest /> },
-      { path: "*", element: <p>Page Not Found</p> },
+      { path: "", element: <HomePage /> },
+      { path: "schedule", element: <ViewSchedules /> },
+      { path: "blogs", element: <BlogRequest /> },
+      { path: "messages", element: <Message /> },
+      { path: "profile", element: <Profile /> },
+      { path: "notifications", element: <Notification /> },
+      { path: "blog/:id", element: <ReadBlog /> },
+      { path: "analytic-dashboard", element: <AnalyticDashBoard /> },
+      { path: "*", element: <Navigate to="/tutor" replace /> },
     ],
   },
 ]);

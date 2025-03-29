@@ -53,8 +53,8 @@ const useComment = () => {
         }
       );
 
-      if (res.status === 200) {
-        dispatch(addComment({ blog_id: blogId, comment: res.data.comment }));
+      if (res.status === 201) {
+        await handleGetComments(blogId);
       }
     } catch (error) {
       console.log(error);

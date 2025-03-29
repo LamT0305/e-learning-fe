@@ -1,13 +1,100 @@
-import React, { useEffect, useRef, useState } from "react";
-import "./style.css";
+import React, { useEffect, useRef, useState, memo } from "react";
 import avt from "../../../assets/avt.jpg";
 import useMessage from "../../../redux/hooks/useMessage";
 import useAuth from "../../../redux/hooks/useAuth";
-import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000"); // Ensure WebSocket is initialized
+const MessageItem = memo(({ message, currentUserId, onEdit, onDelete }) => {
+  const [showActions, setShowActions] = useState(false);
+  const isSentByUser =
+    String(message?.sender?._id || message?.sender) === String(currentUserId);
+  const actionsRef = useRef(null);
 
-function ViewMessage({ id, name }) {
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (actionsRef.current && !actionsRef.current.contains(event.target)) {
+        setShowActions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div
+      className={`flex ${isSentByUser ? "justify-end" : "justify-start"} mb-4`}
+    >
+      <div
+        className={`flex items-start max-w-[70%] ${
+          isSentByUser ? "flex-row-reverse" : "flex-row"
+        }`}
+      >
+        {!isSentByUser && (
+          <img src={avt} alt="avatar" className="w-8 h-8 rounded-full mr-2" />
+        )}
+        <div
+          className={`flex flex-col ${
+            isSentByUser ? "items-end" : "items-start"
+          }`}
+        >
+          <div
+            className={`px-4 py-2 rounded-2xl ${
+              isSentByUser
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100 text-gray-800"
+            }`}
+          >
+            <p className="text-sm">{message?.content}</p>
+          </div>
+          <div className="flex items-center mt-1">
+            <span className="text-xs text-gray-500">
+              {new Date(message?.createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+            {isSentByUser && (
+              <div className="relative ml-2" ref={actionsRef}>
+                <div
+                  onClick={() => setShowActions(!showActions)}
+                  className="cursor-pointer p-1 text-gray-500 hover:text-gray-700"
+                >
+                  <i className="fas fa-ellipsis-h text-xs" />
+                </div>
+                {showActions && (
+                  <div className="absolute bottom-full right-0 mb-1 bg-white shadow-lg rounded-lg py-1 min-w-[100px] z-10">
+                    <div
+                      onClick={() => {
+                        onEdit(message);
+                        setShowActions(false);
+                      }}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                    >
+                      <i className="fas fa-edit text-xs text-blue-500 mr-2" />
+                      <span className="text-sm">Edit</span>
+                    </div>
+                    <div
+                      onClick={() => {
+                        onDelete(message);
+                        setShowActions(false);
+                      }}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                    >
+                      <i className="fas fa-trash text-xs text-red-500 mr-2" />
+                      <span className="text-sm">Delete</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+const ViewMessage = memo(({ id, name }) => {
   const {
     messages,
     handleGetConversationBetweenUsers,
@@ -17,192 +104,117 @@ function ViewMessage({ id, name }) {
   } = useMessage();
   const { user, handleGetUser } = useAuth();
   const [newMessage, setNewMessage] = useState("");
-  const [editingMessageId, setEditingMessageId] = useState(null); // Track editing message
-
-  const generateConversationId = (userId1, userId2) => {
-    return [userId1, userId2].sort().join("_"); // Ensures consistent ordering
-  };
+  const [editingMessageId, setEditingMessageId] = useState(null);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    if (id && user?.user_id?._id) {
-      const conversationId = generateConversationId(user.user_id._id, id);
-      socket.emit("joinRoom", conversationId);
-      handleGetConversationBetweenUsers(id);
-    }
-    handleGetUser();
-  }, [id, user]); // Ensure it updates when `id` or `user` changes
+    let isMounted = true;
 
-  // Handle Send or Update Message
-  const _handleSendMessage = (e) => {
+    const initializeChat = async () => {
+      if (!id || !user?._id) return;
+      if (isMounted) {
+        await handleGetConversationBetweenUsers(id);
+      }
+    };
+
+    handleGetUser();
+    initializeChat();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id, user?._id]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleMessageSubmit = (e) => {
     e.preventDefault();
-    if (newMessage.trim() === "" || !id) return;
+    if (newMessage.trim() === "" || !id || !user?._id) return;
 
     if (editingMessageId) {
-      // If editing, update the message
       handleUpdateMessage(editingMessageId, newMessage);
       setEditingMessageId(null);
     } else {
-      // Otherwise, send a new message
       handleSendMessage(id, newMessage);
     }
-    setNewMessage(""); // Clear input
+    setNewMessage("");
   };
 
-  // Handle Edit Click
-  const _handleEditMessage = (messageId, content) => {
-    setEditingMessageId(messageId);
-    setNewMessage(content); // Populate input with message content
+  const handleEditMessage = (message) => {
+    if (!message?._id || !user?._id) return;
+    setEditingMessageId(message._id);
+    setNewMessage(message.content);
   };
 
-  const bottomRef = useRef(null);
-  const messagesEndRef = useRef(null);
-  const [isAtBottom, setIsAtBottom] = useState(true);
+  const handleMessageDelete = (message) => {
+    if (!message?._id || !message?.sender?._id || !user?._id) return;
+    handleDeleteMessage(message._id, message.sender._id, user._id);
+  };
 
-  const checkIfAtBottom = () => {
-    if (messagesEndRef.current) {
-      const { scrollHeight, scrollTop, clientHeight } = messagesEndRef.current;
-      setIsAtBottom(scrollHeight - scrollTop === clientHeight);
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleMessageSubmit(e);
     }
   };
 
-  useEffect(() => {
-    checkIfAtBottom();
-    if (isAtBottom && bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages, isAtBottom]);
+  if (!user?._id) return null;
+
   return (
-    <div className="message-list">
-      <div style={{ display: "flex", height: "10%" }}>
-        <div
-          style={{
-            padding: 20,
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "cornsilk",
-            width: "100%",
-          }}
-        >
-          <img
-            src={avt}
-            alt="avt"
-            className="avt"
-            width={46}
-            height={46}
-            style={{ borderRadius: "50%" }}
-          />
-          <p>{name ? name : "Unknown"}</p>
+    <div className="w-[80%] h-full flex flex-col bg-white">
+      <div className="h-16 border-b flex items-center px-6">
+        <img src={avt} alt="avatar" className="w-10 h-10 rounded-full" />
+        <div className="ml-4">
+          <h3 className="font-semibold text-gray-800">{name || "Unknown"}</h3>
+          <p className="text-xs text-gray-500">Active now</p>
         </div>
       </div>
-      <div className="ms-content">
-        <div
-          className="ms-content-listms"
-          ref={messagesEndRef}
-          onScroll={checkIfAtBottom}
-        >
-          {messages.map((message, index) => (
-            <div
-              key={message._id || index}
-              className={`message-v ${
-                String(message.sender_id._id || message.sender_id) ===
-                String(user.user_id?._id)
-                  ? "sent"
-                  : "received"
-              } ${message.sender_id._id}`}
-            >
-              <div
-                className=""
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                {String(message.sender_id._id || message.sender_id) !==
-                String(user.user_id?._id) ? (
-                  <img
-                    src={avt}
-                    alt="avt"
-                    className="avt"
-                    width={36}
-                    height={36}
-                    style={{ borderRadius: "50%" }}
-                  />
-                ) : null}
-                <div className="message-content" style={{ marginRight: 10 }}>
-                  {message.content}
-                </div>
-                <div className="timestamp">
-                  {new Date(message.created_at).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </div>
 
-                {String(message.sender_id._id || message.sender_id) ===
-                String(user.user_id?._id) ? (
-                  <div
-                    className="message-actions"
-                    style={{
-                      marginLeft: 10,
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      alignItems: "center",
-                    }}
-                  >
-                    <button
-                      style={{ padding: 5 }}
-                      onClick={() =>
-                        _handleEditMessage(message._id, message.content)
-                      }
-                    >
-                      <i className="fa fa-edit"></i>
-                    </button>
-                    <button
-                      style={{ padding: 5 }}
-                      onClick={() =>
-                        handleDeleteMessage(
-                          message._id,
-                          message.sender_id,
-                          user.user_id?._id
-                        )
-                      }
-                    >
-                      <i className="fa fa-trash"></i>
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-            </div>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto px-6 py-4" ref={messagesEndRef}>
+          {messages?.map((message) => (
+            <MessageItem
+              key={message?._id}
+              message={message}
+              currentUserId={user._id}
+              onEdit={handleEditMessage}
+              onDelete={handleMessageDelete}
+            />
           ))}
-          {/* Add this div to scroll to */}
-          <div ref={bottomRef} />
         </div>
 
-        {/* Input */}
-        <div className="message-input">
-          <input
-            type="text"
-            placeholder="Write a message"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-          />
-          <div
-            style={{
-              color: "blue",
-              padding: 8,
-              fontSize: 20,
-              cursor: "pointer",
-            }}
+        <div className="border-t p-4">
+          <form
+            onSubmit={handleMessageSubmit}
+            className="flex items-center gap-2"
           >
-            <i
-              className={`fa ${
-                editingMessageId ? "fa-check" : "fa-paper-plane"
-              }`}
-              aria-hidden="true"
-              onClick={(e) => _handleSendMessage(e)}
-            ></i>
-          </div>
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Type a message..."
+              className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              type="submit"
+              className="!py-2 px-4 !rounded-xl !bg-blue-500 !text-white hover:!bg-blue-600 !transition-colors"
+            >
+              <i
+                className={`fas ${
+                  editingMessageId ? "fa-check" : "fa-paper-plane"
+                }`}
+              />
+            </button>
+          </form>
         </div>
       </div>
     </div>
   );
-}
+});
 
 export default ViewMessage;

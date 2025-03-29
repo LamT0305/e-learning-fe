@@ -19,17 +19,25 @@ const slice = createSlice({
     },
 
     setMessages: (state, action) => {
-      state.messages = action.payload; 
+      state.messages = action.payload;
     },
 
     addMessage: (state, action) => {
-      state.messages.push(action.payload); 
+      const exists = state.messages.some(
+        (msg) => msg._id === action.payload._id
+      );
+      if (!exists) {
+        state.messages.push(action.payload);
+      }
     },
 
     updateMessage: (state, action) => {
-      state.messages = state.messages.map((msg) =>
-        msg._id === action.payload._id ? action.payload : msg
+      const index = state.messages.findIndex(
+        (msg) => msg._id === action.payload._id
       );
+      if (index !== -1) {
+        state.messages[index] = action.payload;
+      }
     },
 
     deleteMessage: (state, action) => {

@@ -32,11 +32,12 @@ function App() {
     return <AuthRouter />;
   }
 
+
   return (
     <>
       <ToastContainer />
-      {role === "Student" && <StudentRouter />}
-      {role === "Tutor" && <TutorRouter />}
+      {role === "student" && <StudentRouter />}
+      {role === "tutor" && <TutorRouter />}
       {role === "staff" && <StaffRouter />}
     </>
   );

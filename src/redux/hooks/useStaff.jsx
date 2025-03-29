@@ -86,10 +86,10 @@ const useStaff = () => {
         data,
         config
       );
+      console.log(response.data.allocations);
       if (response.status === 200) {
         message.success("Allocation created successfully");
-        dispatch(addAllocation(response.data.allocation));
-        return true;
+        fetchAllocations();
       }
     } catch (error) {
       message.error(
@@ -98,7 +98,6 @@ const useStaff = () => {
       console.error(error);
     }
     dispatch(setLoading(false));
-    return false;
   };
 
   const deleteAllocation = async (id) => {
@@ -111,14 +110,12 @@ const useStaff = () => {
       if (response.status === 200) {
         message.success("Allocation deleted successfully");
         dispatch(removeAllocation(id));
-        return true;
       }
     } catch (error) {
       message.error("Failed to delete allocation");
       console.error(error);
     }
     dispatch(setLoading(false));
-    return false;
   };
 
   // Tutor Operations
@@ -133,10 +130,10 @@ const useStaff = () => {
       if (response.status === 201) {
         dispatch(addTutor(response.data.tutor));
       }
+      dispatch(setLoading(false));
     } catch (error) {
       message.error(error.response?.data?.message || "Failed to create tutor");
       console.error(error);
-    } finally {
       dispatch(setLoading(false));
     }
   };
@@ -150,16 +147,13 @@ const useStaff = () => {
         config
       );
       if (response.status === 200) {
-        message.success("Tutor updated successfully");
         dispatch(updateTutor(response.data.tutor));
-        return true;
       }
     } catch (error) {
       message.error(error.response?.data?.message || "Failed to update tutor");
       console.error(error);
     }
     dispatch(setLoading(false));
-    return false;
   };
 
   const deleteTutor = async (id) => {
@@ -170,16 +164,13 @@ const useStaff = () => {
         config
       );
       if (response.status === 200) {
-        message.success("Tutor deleted successfully");
         dispatch(removeTutor(id));
-        return true;
       }
     } catch (error) {
       message.error("Failed to delete tutor");
       console.error(error);
     }
     dispatch(setLoading(false));
-    return false;
   };
 
   // Student Operations
@@ -191,10 +182,8 @@ const useStaff = () => {
         data,
         config
       );
-      if (response.status === 200) {
-        message.success("Student created successfully");
+      if (response.status === 201) {
         dispatch(addStudent(response.data.student));
-        return true;
       }
     } catch (error) {
       message.error(
@@ -203,7 +192,6 @@ const useStaff = () => {
       console.error(error);
     }
     dispatch(setLoading(false));
-    return false;
   };
 
   const editStudent = async (id, data) => {
@@ -215,9 +203,7 @@ const useStaff = () => {
         config
       );
       if (response.status === 200) {
-        message.success("Student updated successfully");
         dispatch(updateStudent(response.data.student));
-        return true;
       }
     } catch (error) {
       message.error(
@@ -226,7 +212,6 @@ const useStaff = () => {
       console.error(error);
     }
     dispatch(setLoading(false));
-    return false;
   };
 
   const deleteStudent = async (id) => {
@@ -237,16 +222,13 @@ const useStaff = () => {
         config
       );
       if (response.status === 200) {
-        message.success("Student deleted successfully");
         dispatch(removeStudent(id));
-        return true;
       }
     } catch (error) {
       message.error("Failed to delete student");
       console.error(error);
     }
     dispatch(setLoading(false));
-    return false;
   };
 
   const getDashboardStats = async () => {

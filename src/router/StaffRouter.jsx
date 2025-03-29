@@ -8,6 +8,7 @@ import StaffDashboard from "../pages/staff/StaffDashboard";
 import ManageTutors from "../pages/staff/ManageTutors";
 import ManageStudents from "../pages/staff/ManageStudents";
 import Allocations from "../pages/staff/Allocations";
+import AnalyticDashboard from "../pages/staff/AnalyticDashboard";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "staff/allocations",
         element: <Allocations />,
+      },
+      {
+        path: "staff/analytics",
+        element: <AnalyticDashboard />,
       },
       {
         path: "*",

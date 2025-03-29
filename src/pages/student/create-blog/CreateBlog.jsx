@@ -2,16 +2,19 @@ import React, { useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import "./style.css";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useBlog from "../../../redux/hooks/useBlog";
+import { Button, Input, message } from "antd";
 
 const CreateBlog = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const quillRef = useRef(null);
   const editorRef = useRef(null);
   const { id } = useParams();
+  const navigate = useNavigate();
   const urlBackEnd = "http://localhost:3000";
 
   const {
@@ -23,7 +26,7 @@ const CreateBlog = () => {
   } = useBlog();
 
   useEffect(() => {
-    if (editorRef.current) return; // Prevent re-initialization
+    if (editorRef.current) return;
 
     editorRef.current = new Quill(quillRef.current, {
       theme: "snow",
@@ -54,126 +57,131 @@ const CreateBlog = () => {
   useEffect(() => {
     if (blog && editorRef.current) {
       setTitle(blog.title || "");
-
-      // Reset the editor content properly
-      editorRef.current.root.innerHTML = ""; // Clear existing content
+      editorRef.current.root.innerHTML = "";
       editorRef.current.clipboard.dangerouslyPasteHTML(blog.content || "");
-
-      setContent(blog.content || ""); // Update local state
+      setContent(blog.content || "");
+      if (blog.image) {
+        setImagePreview(`${urlBackEnd}${blog.image}`);
+      }
     }
   }, [blog]);
 
-  // clear data when navigating away from the page
+
   useEffect(() => {
     if (!id) {
-      // Clear the form when moving to create mode
       setTitle("");
       setContent("");
       setImage(null);
-
+      setImagePreview(null);
       if (editorRef.current) {
-        editorRef.current.root.innerHTML = ""; // Clear Quill content
+        editorRef.current.root.innerHTML = "";
       }
     }
-  }, [id, blog]);
+  }, [id]);
+
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        message.error("Image size should be less than 5MB");
+        return;
+      }
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!title.trim() || !content.trim()) {
+      message.error("Please fill in all required fields");
+      return;
+    }
 
     const formData = new FormData();
-    formData.append("title", title);
+    formData.append("title", title.trim());
     formData.append("content", content);
     if (image) {
       formData.append("image", image);
     }
+
     const isConfirmed = window.confirm(
       !id
         ? "Are you sure you want to create a new blog?"
         : "Are you sure you want to update this blog?"
     );
+
     if (isConfirmed) {
-      if (!id) {
-        handleUploadBlog(formData);
-      } else {
-        handleUpdateBlog(id, formData);
+      try {
+        if (!id) {
+          await handleUploadBlog(formData);
+        } else {
+          await handleUpdateBlog(id, formData);
+        }
+        // navigate("/blog-management");
+      } catch (error) {
+        message.error("Failed to save blog");
       }
     }
   };
 
   const getFullImagePath = (path) => {
-    return path.startsWith("http") ? path : `${urlBackEnd}${path}`;
+    return path?.startsWith("http") ? path : `${urlBackEnd}${path}`;
   };
+
   return (
-    <div className="inner-page">
-      <div className="create-blog">
-        <h2>Upload Blog</h2>
-        <form onSubmit={handleSubmit}>
-          <div
-            style={{ display: "flex", alignItems: "center", marginBottom: 20 }}
-          >
-            <label style={{ marginRight: 20 }}>Title:</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              style={{
-                width: "100%",
-                padding: 10,
-                borderRadius: 10,
-                border: "1px solid #ccc",
-              }}
-            />
-          </div>
-          <div
-            style={{ display: "flex", alignItems: "center", marginBottom: 20 }}
-          >
-            <label style={{ marginRight: 20 }}>Image:</label>
-            <input type="file" onChange={handleImageChange} />
-            {/* Show existing image if available */}
-            {blog?.image && id && !image && (
-              <img
-                src={getFullImagePath(blog.image)}
-                alt="Current Blog"
-                style={{
-                  width: 200,
-                  height: 200,
-                  marginLeft: 20,
-                  objectFit: "cover",
-                }}
-              />
-            )}
+    <div className="w-full h-[80vh] overflow-y-auto p-6">
+      <h2 className="text-2xl font-bold mb-6">
+        {id ? "Edit Blog" : "Create New Blog"}
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Title:</label>
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            placeholder="Enter blog title"
+            className="w-full"
+          />
+        </div>
 
-            {/* Show preview of newly selected image */}
-            {image && (
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Image:</label>
+          <input
+            type="file"
+            onChange={handleImageChange}
+            accept="image/*"
+            className="mb-2"
+          />
+          {imagePreview && (
+            <div className="mt-2">
               <img
-                src={URL.createObjectURL(image)}
-                alt="New Blog"
-                style={{
-                  width: 100,
-                  height: 100,
-                  marginLeft: 20,
-                  objectFit: "cover",
-                }}
+                src={imagePreview}
+                alt="Blog preview"
+                className="max-w-md max-h-64 object-contain"
               />
-            )}
-          </div>
-          <div>
-            <label>Content:</label>
-            <div ref={quillRef} />
-          </div>
+            </div>
+          )}
+        </div>
 
-          <button
-            style={{ marginTop: 10, backgroundColor: "burlywood" }}
-            type="submit"
-          >
-            {!id ? "Upload Blog" : "Update Blog"}
-          </button>
-        </form>
-      </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Content:</label>
+          <div ref={quillRef} className="bg-white" />
+        </div>
+
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={isLoading}
+          disabled={isLoading || !title.trim() || !content.trim()}
+          className="mt-4"
+          style={{ backgroundColor: "#1890ff" }}
+        >
+          {id ? "Update Blog" : "Create Blog"}
+        </Button>
+      </form>
     </div>
   );
 };

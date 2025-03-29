@@ -6,6 +6,7 @@ const initialState = {
   totalPages: 0,
   currentPage: 1,
   totalStudent: 0,
+  assignedTutors: [], // New state for assigned tutors
 };
 
 const slice = createSlice({
@@ -27,6 +28,10 @@ const slice = createSlice({
     setTotalStudent: (state, action) => {
       state.totalStudent = action.payload;
     },
+    setAssignedTutors: (state, action) => {
+      // New reducer for assigned tutors
+      state.assignedTutors = action.payload;
+    },
   },
 });
 
@@ -36,5 +41,6 @@ export const {
   setTotalPages,
   setCurrentPage,
   setTotalStudent,
+  setAssignedTutors, // Export new action
 } = slice.actions;
 export default slice.reducer;

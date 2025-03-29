@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
-import "./style.css";
+import React, { useEffect } from "react";
+import { Table, Button, Tag, Space, Typography, Modal } from "antd";
+import { EyeOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import useBlog from "../../../redux/hooks/useBlog";
+
+const { Title } = Typography;
 
 function BlogRequest() {
   const { isLoading, blogs, handleGetBlogRequest, handleApproveBlog } =
@@ -10,92 +13,83 @@ function BlogRequest() {
     handleGetBlogRequest();
   }, []);
 
+  const showBlogContent = (content) => {
+    Modal.info({
+      title: "Blog Content",
+      width: 720,
+      content: <div dangerouslySetInnerHTML={{ __html: content }}></div>,
+    });
+  };
+
+  console.log(blogs);
+
+  const columns = [
+    {
+      title: "Author",
+      dataIndex: ["author_id", "name"],
+      key: "author",
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      ellipsis: true,
+    },
+    {
+      title: "Status",
+      key: "status",
+      render: () => <Tag color="warning">Waiting for approval</Tag>,
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "created_at",
+      render: (date) => new Date(date).toLocaleString(),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, blog) => (
+        <Space>
+          <Button
+            type="primary"
+            icon={<EyeOutlined />}
+            onClick={() => showBlogContent(blog.content)}
+          />
+          <Button
+            type="primary"
+            icon={<CheckOutlined />}
+            onClick={() => handleApproveBlog(blog._id, "0")}
+            style={{ backgroundColor: "#52c41a" }}
+          />
+          <Button
+            type="primary"
+            danger
+            icon={<CloseOutlined />}
+            onClick={() => handleApproveBlog(blog._id, "1")}
+          />
+        </Space>
+      ),
+    },
+  ];
+
   return (
-    <div className="inner-page">
-      <div
-        className="inner-page"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "100%",
+    <div className="p-6">
+      <Title level={2} className="mb-6">
+        Blog Requests
+      </Title>
+
+      <Table
+        columns={columns}
+        dataSource={blogs}
+        rowKey="_id"
+        loading={isLoading}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: true,
+          showTotal: (total) => `Total ${total} items`,
         }}
-      >
-        <div className="blog-container">
-          <h2 style={{ textDecoration: "underline", marginBottom: 20 }}>
-            View all blogs request
-          </h2>
-          <ul className="blog-table">
-            <ul className="tb-head">
-              <li>Author</li>
-              <li>Content</li>
-              <li>Title</li>
-              <li>Status</li>
-              <li>Created At</li>
-              <li>Actions</li>
-            </ul>
-            <ul className="tb-body">
-              {blogs.map((blog) => (
-                <ul className="tb-row" key={blog._id}>
-                  <li>{blog.author_id.name}</li>
-                  <li>
-                    <div
-                      className="blog-ct"
-                      dangerouslySetInnerHTML={{ __html: blog.content }}
-                    ></div>
-                  </li>
-                  <li>{blog.title}</li>
-                  <li>Waiting for approval</li>
-                  <li>{new Date(blog.created_at).toLocaleString()}</li>
-                  <li
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-evenly",
-                      overflowX: "scroll",
-                    }}
-                  >
-                    <button>
-                      <i className="fa fa-eye"></i>
-                    </button>
-                    <button onClick={() => handleApproveBlog(blog._id, "0")}>
-                      <i className="fa fa-check"></i>
-                    </button>
-                    <button onClick={() => handleApproveBlog(blog._id, "1")}>
-                      <i className="fa fa-times"></i>
-                    </button>
-                  </li>
-                </ul>
-              ))}
-            </ul>
-          </ul>
-        </div>
-
-        {/* <div className="pages">
-          <button onClick={handlePrevPageClick} disabled={startPage === 1}>
-            &lt; Prev
-          </button>
-
-          {pages.map((page) => (
-            <button
-              key={page}
-              onClick={() => handlePageClick(page)}
-              disabled={page === currentPage}
-              className={page === currentPage ? "page-btn-active" : "page-btn"}
-            >
-              {page}
-            </button>
-          ))}
-
-          <button
-            onClick={handleNextPageClick}
-            disabled={endPage >= totalPages}
-          >
-            Next &gt;
-          </button>
-        </div> */}
-      </div>
+      />
     </div>
   );
 }

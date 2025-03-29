@@ -1,20 +1,24 @@
-import React from "react";
+import React, { useState, memo } from "react";
 import ListUserMessage from "../../components/message/ListUserMessage/ListUserMessage";
 import ViewMessage from "../../components/message/ViewMessage/ViewMessage";
 import "./style.css";
 
-function Message() {
-  const [messageId, setMessageId] = React.useState(null);
-  const [userName, setUserName] = React.useState(null);
+const Message = memo(() => {
+  const [selectedUser, setSelectedUser] = useState({ id: null, name: null });
+
+  const handleUserSelect = (id, name) => {
+    setSelectedUser({ id, name });
+  };
+
   return (
-    <div className="inner-page">
-      <div className="message">
-        <ListUserMessage messageId={messageId} setUserName={setUserName} setMessageId={setMessageId}/>
-        <ViewMessage id={messageId} name={userName} />
-      </div>
+    <div className="w-full h-full flex">
+      <ListUserMessage
+        messageId={selectedUser.id}
+        onUserSelect={handleUserSelect}
+      />
+      <ViewMessage id={selectedUser.id} name={selectedUser.name} />
     </div>
   );
-}
+});
 
 export default Message;
- 
