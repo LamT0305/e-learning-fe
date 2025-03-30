@@ -25,10 +25,13 @@
   text-align: start;
   text-decoration: none;
   width: 100%;
-  padding: 14px 35px;
+  padding: 14px;
 }
 
 .navigation ul li a:hover {
   background-color: #575757;
 }
 
+.dropdown-content{
+  background-color: #ccc;
+}

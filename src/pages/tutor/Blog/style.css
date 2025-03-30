@@ -1,0 +1,45 @@
+.blog-ct img {
+  display: none;
+}
+
+.blog-ct h1 {
+  font-size: 14px;
+}
+
+.blog-ct {
+  font-size: 10px;
+}
+
+.blog-table {
+  width: 95%;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+}
+
+.tb-head {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.tb-head li {
+  border: 1px solid #ccc;
+  width: 100%;
+  text-align: center;
+  padding: 15px 20px;
+}
+
+.tb-row {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.tb-row li {
+  border: 1px solid #ccc;
+  width: calc(100% / 6);
+  text-align: center;
+  height: 60px;
+  overflow: hidden;
+  padding: 10px;
+}

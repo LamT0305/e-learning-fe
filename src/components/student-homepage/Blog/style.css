@@ -1,11 +1,10 @@
 .blog {
   width: 100%;
-  background-color: white;
   border-radius: 10px;
   padding: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   overflow-y: scroll;
-  background-color: #f3f4f6;
+  background-color: #ccc;
 }
 
 img.avt {
@@ -31,10 +30,10 @@ img.avt {
   align-items: center;
 }
 
-.blog-image{
-  width: 95%;
+.blog-image {
+  width: 250px;
+  height: auto;
 }
-
 
 .comment-input {
   width: 100%;
@@ -63,17 +62,34 @@ img.avt {
   border-radius: 20px;
 }
 
-.comment-user {
-  display: flex;
-  align-items: center;
-}
-
-.comment-user .avt{
+.comment-user .avt {
   width: 40px;
   height: 40px;
 }
 
 .comment-content {
-  margin-left: 30px;
+  margin-left: 50px;
   font-size: 14px;
+}
+
+.view-cmt-btn {
+  display: flex;
+  justify-content: center;
+  background-color: white;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 20px;
+}
+
+.comment-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cmt-action-btn {
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

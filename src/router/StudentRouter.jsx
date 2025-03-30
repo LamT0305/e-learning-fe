@@ -1,40 +1,38 @@
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import Navigation from "../components/Navbar/Navigation";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import StudentLayout from "../layout/StudentLayout";
 import HomePage from "../pages/student/home/HomePage";
-import Notification from "../pages/student/notification/Notification";
-import StudentMessage from "../pages/message/StudentMessage";
 import ViewAllSchedule from "../pages/student/schedule/all-schedule/ViewAllSchedule";
 import BookNewSchedule from "../pages/student/schedule/book-schedule/BookNewSchedule";
-import ScheduleHistory from "../pages/student/schedule/schedule-history/ScheduleHistory";
-
-const Layout = () => {
-  return (
-    <>
-      <Navigation />
-      <Outlet />
-    </>
-  );
-};
+import CreateBlog from "../pages/student/create-blog/CreateBlog";
+import BlogManagement from "../pages/student/blog-management/BlogManagement";
+import Message from "../pages/message/Message";
+import Notification from "../pages/notification/Notification";
+import ReadBlog from "../pages/ReadBlog";
+import Tutor from "../pages/student/Tutor";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <StudentLayout />,
     children: [
       {
         path: "/",
         element: <HomePage />,
       },
       {
+        path: "/view-tutor",
+        element: <Tutor />,
+      },
+      {
         path: "/student-messages",
-        element: <StudentMessage />,
+        element: <Message />,
       },
       {
         path: "/notifications",
         element: <Notification />,
       },
       {
-        path: "/view-schedules",
+        path: "/view-student-schedules",
         element: <ViewAllSchedule />,
       },
       {
@@ -42,15 +40,27 @@ const router = createBrowserRouter([
         element: <BookNewSchedule />,
       },
       {
-        path: "/schedule-history",
-        element: <ScheduleHistory />,
+        path: "/create-blog",
+        element: <CreateBlog />,
+      },
+      {
+        path: "/update-blog/:id",
+        element: <CreateBlog />,
+      },
+      {
+        path: "/blog-management",
+        element: <BlogManagement />,
+      },
+      {
+        path: "/blog/:id",
+        element: <ReadBlog />,
       },
     ],
   },
 ]);
 
 function StudentRouter() {
-  return <RouterProvider router={router}></RouterProvider>;
+  return <RouterProvider router={router} />;
 }
 
 export default StudentRouter;

@@ -1,0 +1,39 @@
+.noti-item {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 10px;
+  width: 90%;
+  margin: 0 auto;
+  border-radius: 10px;
+  margin-top: 10px;
+  position: relative;
+}
+
+.noti-content p {
+  font-weight: bold;
+}
+
+.noti-container {
+  background-color: #ccc;
+  height: 100%;
+}
+
+.noti-list {
+  width: 90%;
+  height: 80%;
+  margin: 0 auto;
+  overflow: scroll;
+}
+.delete-noti {
+  background-color: #f3f4f6;
+  border: none;
+  color: red;
+  font-size: 1.5em;
+  margin-left: 10px;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
