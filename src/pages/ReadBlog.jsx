@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import useBlog from "../redux/hooks/useBlog";
 import { Avatar, Spin } from "antd";
 import avtImg from "../assets/avt.jpg";
+import "./readblog.css";
+
+const BASE_URL = "http://localhost:3000";
 
 function ReadBlog() {
   const { id } = useParams();
@@ -24,6 +27,8 @@ function ReadBlog() {
     return <div className="text-center p-4">Blog not found</div>;
   }
 
+  console.log(blog);
+
   return (
     <div className="max-w-4xl h-[85vh] overflow-auto mx-auto p-6">
       <div className="flex items-center mb-6">
@@ -31,10 +36,16 @@ function ReadBlog() {
         <span className="ml-3 font-semibold">{blog.author_id?.name}</span>
       </div>
 
-      <h1 className="text-3xl font-bold mb-6">{blog.title}</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">{blog.title}</h1>
+
+      {blog.image && (
+        <div className="my-5">
+          <img src={`${BASE_URL}${blog.image}`} alt="" className="object-fit" />
+        </div>
+      )}
 
       <div
-        className="prose max-w-none"
+        className="prose max-w-none content"
         dangerouslySetInnerHTML={{ __html: blog.content }}
       />
 
