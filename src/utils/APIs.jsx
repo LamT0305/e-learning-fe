@@ -41,7 +41,7 @@ export const POST_API = (id) => {
 
 export const PUT_API = (id) => {
   return {
-    updateStudent: `/api/v1/students/${id}`,
+    updateProfile: `/api/v1/users/profile`,
     updateTutor: `/api/v1/tutors/${id}`,
     updateMessage: `/api/v1/messages/${id}`,
     updateComment: `/api/v1/comments/comments/${id}`,

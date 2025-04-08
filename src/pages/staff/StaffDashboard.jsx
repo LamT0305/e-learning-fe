@@ -61,7 +61,7 @@ function StaffDashboard() {
 
   return (
     <div className="dashboard-container">
-      <h2>Staff Dashboard</h2>
+      <h2 className="text-lg font-bold py-2">Staff Dashboard</h2>
 
       <Row gutter={16} style={{ marginBottom: 24 }}>
         <Col span={8}>

@@ -77,7 +77,7 @@ const StudentLayout = () => {
   const userMenuItems = [
     {
       key: "profile",
-      label: <Link to="/student/profile">Profile</Link>,
+      label: <Link to="/profile">Profile</Link>,
       icon: <UserOutlined />,
     },
     {

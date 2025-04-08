@@ -9,6 +9,7 @@ import Message from "../pages/message/Message";
 import Notification from "../pages/notification/Notification";
 import ReadBlog from "../pages/ReadBlog";
 import Tutor from "../pages/student/Tutor";
+import Profile from "../pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "/blog/:id",
         element: <ReadBlog />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
       },
     ],
   },

@@ -104,7 +104,7 @@ function Allocations() {
           marginBottom: 16,
         }}
       >
-        <h2>Manage Allocations</h2>
+        <h2 className="text-xl font-bold py-3">Manage Allocations</h2>
         <Button
           type="primary"
           icon={<PlusOutlined />}

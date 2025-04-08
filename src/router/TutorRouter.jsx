@@ -9,9 +9,9 @@ import Message from "../pages/message/Message";
 import Notification from "../pages/notification/Notification";
 import ViewSchedules from "../pages/tutor/schedule/ViewSchedules";
 import BlogRequest from "../pages/tutor/Blog/BlogRequest";
-import Profile from "../pages/tutor/profile/Profile";
 import ReadBlog from "../pages/ReadBlog";
 import AnalyticDashBoard from "../pages/tutor/AnalyticDashBoard";
+import Profile from "../pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +30,7 @@ const router = createBrowserRouter([
       { path: "notifications", element: <Notification /> },
       { path: "blog/:id", element: <ReadBlog /> },
       { path: "analytic-dashboard", element: <AnalyticDashBoard /> },
+      { path: "profile", element: <Profile /> },
       { path: "*", element: <Navigate to="/tutor" replace /> },
     ],
   },

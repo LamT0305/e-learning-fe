@@ -1,14 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "../slice/AuthSlice";
 import axiosInstance from "../../utils/Axios";
-import { GET_API, POST_API } from "../../utils/APIs";
+import { GET_API, POST_API, PUT_API } from "../../utils/APIs";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 const useAuth = () => {
   const { isLoading, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let alertShown = false;
+  const token = sessionStorage.getItem("token");
 
   const handleLogin = async (form) => {
     dispatch(setLoading(true));
@@ -23,6 +25,7 @@ const useAuth = () => {
       }
     } catch (error) {
       console.log(error);
+      message.error("Invalid email or password");
     }
     dispatch(setLoading(false));
   };
@@ -58,13 +61,34 @@ const useAuth = () => {
         alert("Session expired! Please login again.");
       }
     }
+    dispatch(setLoading(false));
   };
+
+  const handleUpdateUser = async (form) => {
+    dispatch(setLoading(true));
+    try {
+      const res = await axiosInstance.put(PUT_API().updateProfile, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 200) {
+        dispatch(setUser(res.data.user));
+        message.success("Profile updated successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    dispatch(setLoading(false));
+  };
+
   return {
     isLoading,
     user,
     handleLogin,
     handleLogout,
     handleGetUser,
+    handleUpdateUser,
   };
 };
 

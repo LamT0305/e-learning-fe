@@ -21,7 +21,6 @@ function BlogRequest() {
     });
   };
 
-  console.log(blogs);
 
   const columns = [
     {
