@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { List, Avatar, Spin, Alert } from "antd";
 import useStudent from "../../redux/hooks/useStudent";
 import avt from "../../assets/avt.jpg";
 
@@ -11,52 +10,67 @@ function Tutor() {
   }, []);
 
   if (isLoading) {
-    return <Spin size="large" />;
+    return <div className="flex justify-center items-center">Loading...</div>;
   }
 
   if (!assignedTutors.length) {
-    return <Alert message="No tutors assigned" type="info" showIcon />;
+    return (
+      <div className="p-4 bg-blue-50 text-blue-700 rounded">
+        No tutors assigned
+      </div>
+    );
   }
 
   return (
-    <List
-      itemLayout="horizontal"
-      dataSource={assignedTutors}
-      renderItem={(tutor) => (
-        <List.Item
-          style={{ padding: "20px", borderBottom: "1px solid #f0f0f0" }}
-        >
-          <List.Item.Meta
-            avatar={<Avatar src={avt} size={64} />}
-            title={
-              <span style={{ fontWeight: "bold", fontSize: "16px" }}>
+    <ul className="max-w-3xl mx-auto space-y-8 p-6">
+      {assignedTutors.map((tutor, index) => (
+        <li key={index} className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border border-gray-100">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="relative">
+              <img
+                src={avt}
+                alt={tutor.name}
+                className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-blue-100 hover:border-blue-200 transition-all duration-300 shadow-md"
+              />
+              <div className="absolute -bottom-2 right-0 bg-green-500 w-5 h-5 rounded-full border-2 border-white"></div>
+            </div>
+            
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 hover:text-blue-600 transition-colors duration-300">
                 {tutor.name}
-              </span>
-            }
-            description={
-              <div style={{ marginTop: "10px" }}>
-                {Object.entries(tutor).map(
-                  ([key, value]) =>
-                    key !== "avatar" &&
-                    key !== "role" && (
-                      <p key={key} style={{ margin: "5px 0", color: "#555" }}>
-                        <span style={{ fontWeight: "bold" }}>
-                          {key.charAt(0).toUpperCase() + key.slice(1)}:
-                        </span>{" "}
-                        {key.includes("date") ||
-                        key.includes("created_at") ||
-                        key.includes("updated_at")
-                          ? new Date(value).toLocaleString()
-                          : value.toString()}
+              </h3>
+              <div className="grid gap-4">
+                {[
+                  { label: "Name", key: "name", icon: "👤" },
+                  { label: "Date of Birth", key: "dateOfBirth", icon: "🎂" },
+                  { label: "Address", key: "address", icon: "📍" },
+                  { label: "Email", key: "email", icon: "📧" },
+                ].map(
+                  ({ label, key, icon }) =>
+                    tutor[key] && (
+                      <p key={key} className="flex items-center text-gray-600 hover:bg-gray-50 p-2 rounded-lg transition-colors duration-200">
+                        <span className="w-8 text-xl">{icon}</span>
+                        <span className="w-32 font-medium text-gray-700">
+                          {label}:
+                        </span>
+                        <span className="flex-1">
+                          {key === "dateOfBirth"
+                            ? new Date(tutor[key]).toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                              })
+                            : tutor[key]}
+                        </span>
                       </p>
                     )
                 )}
               </div>
-            }
-          />
-        </List.Item>
-      )}
-    />
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
 
