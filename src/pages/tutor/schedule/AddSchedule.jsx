@@ -145,10 +145,7 @@ function AddSchedule({ onClose }) {
               validator: async (_, value) => {
                 const startTime = form.getFieldValue("startTime");
                 if (startTime && value) {
-                  const duration = dayjs(value).diff(
-                    dayjs(startTime),
-                    "minute"
-                  );
+                  const duration = dayjs(value).diff(startTime, "minute");
                   if (duration <= 0) {
                     throw new Error("End time must be after start time");
                   }
@@ -156,8 +153,9 @@ function AddSchedule({ onClose }) {
                     throw new Error("Session must be at least 30 minutes");
                   }
                   if (duration > 180) {
-                    throw new Error("Session cannot exceed 3 hours");
+                    throw new Error("Session cannot exceed 3 hours (180 minutes)");
                   }
+                  return Promise.resolve();
                 }
               },
             },
