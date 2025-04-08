@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   MenuFoldOutlined,
@@ -17,7 +17,11 @@ const { Header, Sider, Content } = Layout;
 const StaffLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
-  const { user, handleLogout } = useAuth();
+  const { user, handleLogout, handleGetUser } = useAuth();
+
+  useEffect(() => {
+    handleGetUser();
+  }, []);
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -65,6 +69,7 @@ const StaffLayout = () => {
     },
   ];
 
+  console.log(user);
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -98,14 +103,10 @@ const StaffLayout = () => {
           />
           <div style={{ marginRight: "24px" }}>
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-              <div
-                style={{
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Avatar src={user?.avatar} style={{ marginRight: "8px" }} />
+              <div className="flex items-center cursor-pointer">
+              <span className="bg-blue-300 flex items-center justify-center w-8 h-8 font-bold text-white rounded-full mr-3">
+                  {user.name?.charAt(0)}
+                </span>
                 <span>{user?.name}</span>
               </div>
             </Dropdown>
