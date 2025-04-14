@@ -69,7 +69,6 @@ const StaffLayout = () => {
     },
   ];
 
-  console.log(user);
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>

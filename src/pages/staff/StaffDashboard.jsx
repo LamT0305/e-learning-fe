@@ -16,6 +16,7 @@ function StaffDashboard() {
     getDashboardStats,
     fetchAllocations,
     isLoading,
+    deleteAllocation,
   } = useStaff();
 
   useEffect(() => {
@@ -49,15 +50,13 @@ function StaffDashboard() {
         <Space>
           <Button
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record._id)}
+            onClick={() => deleteAllocation(record._id)}
             danger
           />
         </Space>
       ),
     },
   ];
-
-  console.log(allocations);
 
   return (
     <div className="dashboard-container">

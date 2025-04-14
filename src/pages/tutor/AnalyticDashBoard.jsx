@@ -60,6 +60,7 @@ const AnalyticDashBoard = () => {
 
   const dailyData = processSessionData(studentAnalytics?.sessions_over_time);
 
+  console.log(studentAnalytics);
   return (
     <div className="p-6 h-[85vh] overflow-y-auto">
       <h2 className="text-2xl font-bold mb-6">Student Analytics Dashboard</h2>
@@ -157,10 +158,10 @@ const AnalyticDashBoard = () => {
                 yField="sessions"
                 color="#1890ff"
                 label={{
-                  position: "middle",
+                  position: "top",
                   style: {
-                    fill: "#FFFFFF",
-                    opacity: 0.6,
+                    fill: "#000000",
+                    opacity: 0.8,
                   },
                 }}
                 xAxis={{
@@ -170,7 +171,13 @@ const AnalyticDashBoard = () => {
                     },
                   },
                 }}
-                tooltip={false}
+                tooltip={{
+                  showTitle: false,
+                  formatter: (datum) => ({
+                    name: "Sessions",
+                    value: datum.sessions,
+                  }),
+                }}
               />
             </Card>
           )}

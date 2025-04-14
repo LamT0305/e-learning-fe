@@ -7,6 +7,7 @@ import {
   setUpdateSchedule,
   cancelSchedule,
   setFeedback,
+  searchScheduleBySubject,
 } from "../slice/ScheduleSlice";
 import axiosInstance from "../../utils/Axios";
 import { GET_API, POST_API, PUT_API } from "../../utils/APIs";
@@ -81,6 +82,7 @@ const useSchedule = () => {
     } catch (error) {
       console.log(error);
       handleTokenError(error);
+      message.error(error.response?.data?.message);
     }
     dispatch(setLoading(false));
   };
@@ -174,6 +176,10 @@ const useSchedule = () => {
     return filteredSchedules.slice(startIndex, endIndex);
   };
 
+  const handleSearchScheduleBySubject = async (subject) => {
+    dispatch(searchScheduleBySubject(subject));
+  };
+
   return {
     isLoading,
     schedules: getCurrentPageData(),
@@ -188,6 +194,7 @@ const useSchedule = () => {
     handleAddFeedback,
     handleFilterChange,
     handlePageChange,
+    handleSearchScheduleBySubject,
   };
 };
 

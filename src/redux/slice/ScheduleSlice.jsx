@@ -121,6 +121,24 @@ const slice = createSlice({
         state.filteredSchedules.length / state.itemsPerPage
       );
     },
+
+    searchScheduleBySubject: (state, action) => {
+      const text = action.payload;
+
+      if(!text){
+        state.filteredSchedules = state.schedules;
+      }
+      console.log(text)
+
+      state.filteredSchedules = state.schedules.filter((schedule) =>
+        schedule.subject.toLowerCase().includes(text.toLowerCase())
+      );
+
+      state.totalPages = Math.ceil(
+        state.filteredSchedules.length / state.itemsPerPage
+      );
+      state.currentPage = 1;
+    },
   },
 });
 
@@ -134,5 +152,6 @@ export const {
   setCurrentSchedule,
   setFeedback,
   cancelSchedule,
+  searchScheduleBySubject
 } = actions;
 export default reducer;

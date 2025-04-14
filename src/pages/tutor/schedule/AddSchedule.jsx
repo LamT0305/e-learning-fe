@@ -60,12 +60,12 @@ function AddSchedule({ onClose }) {
   const disabledTime = (current, type) => {
     if (type === "start" && dayjs(current).isSame(dayjs(), "day")) {
       const currentHour = dayjs().hour();
-      const currentMinute = dayjs().minute();
+      const selectedHour = dayjs(current).hour();
       return {
         disabledHours: () => Array.from({ length: currentHour }, (_, i) => i),
         disabledMinutes: () =>
-          currentHour === dayjs().hour()
-            ? Array.from({ length: currentMinute }, (_, i) => i)
+          selectedHour === currentHour
+            ? Array.from({ length: dayjs().minute() }, (_, i) => i)
             : [],
       };
     }
@@ -153,7 +153,9 @@ function AddSchedule({ onClose }) {
                     throw new Error("Session must be at least 30 minutes");
                   }
                   if (duration > 180) {
-                    throw new Error("Session cannot exceed 3 hours (180 minutes)");
+                    throw new Error(
+                      "Session cannot exceed 3 hours (180 minutes)"
+                    );
                   }
                   return Promise.resolve();
                 }
@@ -178,6 +180,15 @@ function AddSchedule({ onClose }) {
                 return {
                   disabledHours: () =>
                     Array.from({ length: startTime.hour() }, (_, i) => i),
+                  disabledMinutes: (selectedHour) => {
+                    if (selectedHour === startTime.hour()) {
+                      return Array.from(
+                        { length: startTime.minute() },
+                        (_, i) => i
+                      );
+                    }
+                    return [];
+                  },
                 };
               }
               return {};

@@ -11,6 +11,7 @@ function ViewAllSchedule() {
     handleStudentGetSchedules,
     handleFilterChange,
     handlePageChange,
+    handleSearchScheduleBySubject,
   } = useSchedule();
 
   useEffect(() => {
@@ -37,6 +38,14 @@ function ViewAllSchedule() {
           <h2 className="text-2xl font-semibold text-gray-800 border-b-2 border-blue-500 pb-2">
             My Learning Sessions
           </h2>
+
+          <input
+            type="text"
+            placeholder="Search....."
+            className="bg-gray-200 px-2 py-1 rounded-lg w-[40%]"
+            onChange={(e) => handleSearchScheduleBySubject(e.target.value)}
+          />
+
           <select
             value={filter}
             onChange={(e) => handleFilterChange(e.target.value)}
@@ -82,7 +91,7 @@ function ViewAllSchedule() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-200 h-full">
                 {schedules.map((schedule) => (
                   <tr key={schedule._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
