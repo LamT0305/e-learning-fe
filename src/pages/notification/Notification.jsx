@@ -11,7 +11,7 @@ function Notification() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+    <div className="h-full bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="bg-indigo-300 px-6 py-4">
           <h1 className="text-2xl font-bold text-white">
