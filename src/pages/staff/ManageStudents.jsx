@@ -122,9 +122,6 @@ function ManageStudents() {
       createStudent(formData);
     }
 
-    message.success(
-      `Student ${editingStudent ? "updated" : "created"} successfully`
-    );
     setIsModalOpen(false);
     form.resetFields();
     setEditingStudent(null);

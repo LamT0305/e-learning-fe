@@ -184,6 +184,7 @@ const useStaff = () => {
       );
       if (response.status === 201) {
         dispatch(addStudent(response.data.student));
+        message.success("Student created successfully");
       }
     } catch (error) {
       message.error(
@@ -198,12 +199,13 @@ const useStaff = () => {
     dispatch(setLoading(true));
     try {
       const response = await axiosInstance.put(
-        PUT_API(id).updateStudent,
+        PUT_API(id).updateSudent,
         data,
         config
       );
       if (response.status === 200) {
         dispatch(updateStudent(response.data.student));
+        message.success("Student updated successfully");
       }
     } catch (error) {
       message.error(
@@ -223,6 +225,7 @@ const useStaff = () => {
       );
       if (response.status === 200) {
         dispatch(removeStudent(id));
+        message.success("Student deleted successfully");
       }
     } catch (error) {
       message.error("Failed to delete student");

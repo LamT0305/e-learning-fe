@@ -122,9 +122,6 @@ function ManageTutors() {
       createTutor(formData);
     }
 
-    message.success(
-      `Tutor ${editingTutor ? "updated" : "created"} successfully`
-    );
     setIsModalOpen(false);
     form.resetFields();
     setEditingTutor(null);

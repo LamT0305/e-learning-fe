@@ -48,6 +48,7 @@ export const PUT_API = (id) => {
     updateBlog: `/api/v1/blogs/${id}`,
     blogApproval: `/api/v1/blogs/approve/${id}`,
     updateSchedule: `/api/v1/schedules/${id}`,
+    updateSudent: `/api/v1/students/${id}`,
   };
 };
 
